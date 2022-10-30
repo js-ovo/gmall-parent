@@ -1,0 +1,11 @@
+server:
+  port: 7000
+
+spring:
+  datasource:
+    # 配置数据源
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://192.168.11.10:3306/gmall_product?useSSL=false
+    username: root
+    password: 131421
+    driver-class-name: com.mysql.jdbc.Driver
