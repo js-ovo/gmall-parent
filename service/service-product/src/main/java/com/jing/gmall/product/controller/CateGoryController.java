@@ -2,17 +2,10 @@ package com.jing.gmall.product.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jing.gmall.common.result.Result;
-import com.jing.gmall.product.entity.BaseCategory1;
-import com.jing.gmall.product.entity.BaseCategory2;
-import com.jing.gmall.product.entity.BaseCategory3;
-import com.jing.gmall.product.service.BaseCategory1Service;
-import com.jing.gmall.product.service.BaseCategory2Service;
-import com.jing.gmall.product.service.BaseCategory3Service;
+import com.jing.gmall.product.entity.*;
+import com.jing.gmall.product.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +19,10 @@ public class CateGoryController {
     private BaseCategory2Service baseCategory2Service;
     @Autowired
     private BaseCategory3Service baseCategory3Service;
+    @Autowired
+    private BaseAttrInfoService baseAttrInfoService;
+    @Autowired
+    private BaseAttrValueService baseAttrValueService;
 
 
     /**
@@ -51,6 +48,11 @@ public class CateGoryController {
         return Result.ok(category2s);
     }
 
+    /**
+     *  根据二级分类,返回所有三级分类
+     * @param category2Id
+     * @return
+     */
     @GetMapping("/getCategory3/{category2Id}")
     public Result getCateGory3(@PathVariable("category2Id") Long category2Id){
         QueryWrapper<BaseCategory3> queryWrapper = new QueryWrapper<>();
@@ -58,4 +60,44 @@ public class CateGoryController {
         List<BaseCategory3> category3s = baseCategory3Service.list(queryWrapper);
         return Result.ok(category3s);
     }
+
+
+    /**
+     * 返回商品属性信息和值
+     * @param category1Id
+     * @param category2Id
+     * @param category3Id
+     * @return
+     */
+    @GetMapping("/attrInfoList/{category1Id}/{category2Id}/{category3Id}")
+    public Result attrInfoList(@PathVariable("category1Id") Long category1Id,
+                               @PathVariable("category2Id") Long category2Id,
+                               @PathVariable("category3Id") Long category3Id){
+
+        List<BaseAttrInfo> attrInfos = baseAttrInfoService.attrInfoList(category1Id,category2Id,category3Id);
+        return Result.ok(attrInfos);
+    }
+
+    /**
+     * 保存属性信息/修改属性信息
+     * @param baseAttrInfo
+     * @return
+     */
+    @PostMapping("/saveAttrInfo")
+    public Result saveAttrInfo(@RequestBody BaseAttrInfo baseAttrInfo){
+        baseAttrInfoService.saveAttrInfo(baseAttrInfo);
+        return Result.ok();
+    }
+
+    /**
+     *根据平台属性ID获取平台属性对象数据
+     * @param attrId
+     * @return
+     */
+    @GetMapping("/getAttrValueList/{attrId}")
+    public Result getAttrValueList(@PathVariable("attrId") Long attrId){
+        List<BaseAttrValue> attrValues = baseAttrValueService.getAttrValueList(attrId);
+        return Result.ok(attrValues);
+    }
+
 }
