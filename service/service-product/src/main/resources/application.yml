@@ -11,9 +11,9 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 
 #Minio 相关配置
-minio:
-  config:
-    bucketName: gmall
+app:
+  minio:
+    bucket-name: gmall
     endpoint: http://192.168.11.10:9000
-    accessKey: admin
-    secretKey: admin123456
+    access-key: admin
+    secret-key: admin123456
