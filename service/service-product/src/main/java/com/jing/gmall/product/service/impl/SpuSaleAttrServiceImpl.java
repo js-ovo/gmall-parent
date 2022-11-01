@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jing.gmall.product.entity.SpuSaleAttr;
 import com.jing.gmall.product.service.SpuSaleAttrService;
 import com.jing.gmall.product.mapper.SpuSaleAttrMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author Jing
@@ -15,6 +18,17 @@ import org.springframework.stereotype.Service;
 public class SpuSaleAttrServiceImpl extends ServiceImpl<SpuSaleAttrMapper, SpuSaleAttr>
     implements SpuSaleAttrService{
 
+    @Autowired
+    private SpuSaleAttrMapper spuSaleAttrMapper;
+    /**
+     * 获取销售属性对应的值
+     * @param spuId
+     * @return
+     */
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrList(Long spuId) {
+        return spuSaleAttrMapper.getSpuSaleAttrList(spuId);
+    }
 }
 
 

@@ -7,6 +7,8 @@ import com.jing.gmall.product.service.BaseTrademarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/product")
 public class TrademarkController {
@@ -20,7 +22,7 @@ public class TrademarkController {
      * @return
      */
     @GetMapping("/baseTrademark/{page}/{limit}")
-    public Result getTrademarkList(@PathVariable("page") Long page,@PathVariable("limit") Long limit){
+    public Result baseTrademarkList(@PathVariable("page") Long page,@PathVariable("limit") Long limit){
         Page<BaseTrademark> baseTrademarkPage = baseTrademarkService.page(new Page<>(page,limit));
         return Result.ok(baseTrademarkPage);
     }
@@ -71,5 +73,16 @@ public class TrademarkController {
         BaseTrademark trademark = baseTrademarkService.getById(id);
         return Result.ok(trademark);
     }
+
+    /**
+     * 获取所有的品牌列表
+     * @return
+     */
+    @GetMapping("/baseTrademark/getTrademarkList")
+    public Result getTrademarkList(){
+        List<BaseTrademark> baseTrademarks = baseTrademarkService.list();
+        return Result.ok(baseTrademarks);
+    }
+
 
 }

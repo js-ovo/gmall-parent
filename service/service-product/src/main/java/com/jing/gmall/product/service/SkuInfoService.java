@@ -2,6 +2,7 @@ package com.jing.gmall.product.service;
 
 import com.jing.gmall.product.entity.SkuInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jing.gmall.product.vo.SkuInfoVo;
 
 /**
 * @author Jing
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SkuInfoService extends IService<SkuInfo> {
 
+    void saveSkuInfo(SkuInfoVo skuInfoVo);
 }

@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-import lombok.Data;
 
 /**
  * 库存单元表
@@ -31,7 +32,7 @@ public class SkuInfo implements Serializable {
      * 价格
      */
     @TableField(value = "price")
-    private Integer price;
+    private BigDecimal price;
 
     /**
      * sku名称

@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * sku销售属性值
@@ -30,7 +31,7 @@ public class SkuSaleAttrValue implements Serializable {
      * spu_id(冗余)
      */
     @TableField(value = "spu_id")
-    private Integer spuId;
+    private Long spuId;
 
     /**
      * 销售属性值id

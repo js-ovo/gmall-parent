@@ -1,0 +1,78 @@
+{
+  "id": null,
+  "spuId": 29,
+  "price": "3399",
+  "skuName": "三星 SAMSUNG Galaxy S22 超视觉夜拍系统超清夜景 超电影影像系统 超耐用精工设计 8GB+128GB 羽梦白 5G手机",
+  "weight": "0.285",
+  "skuDesc": "商品名称：三星Galaxy S22商品编号：100018354375商品毛重：285.00g商品产地：越南CPU型号：骁龙8系列运行内存：8GB机身颜色：白色三防标准：IP68屏幕分辨率：FHD+充电功率：25W及以下机身内存：128GB风格：商务屏幕材质：OLED直屏后摄主像素：5000万像素机身色系：白色系",
+  "category3Id": 61,
+  "skuDefaultImg": "http://192.168.11.10:9000/gmall/2022-11-01/1f2bfb5b0dc047f7bd81fc139cf5a8f1_2.png",
+  "tmId": 3,
+  "skuAttrValueList": [
+    {
+      "attrId": "1",
+      "valueId": "5"
+    },
+    {
+      "attrId": "2",
+      "valueId": "16"
+    },
+    {
+      "attrId": "3",
+      "valueId": "19"
+    },
+    {
+      "attrId": "4",
+      "valueId": "26"
+    },
+    {
+      "attrId": "5",
+      "valueId": "34"
+    },
+    {
+      "attrId": "13",
+      "valueId": "85"
+    }
+  ],
+  "skuSaleAttrValueList": [
+    {
+      "saleAttrValueId": "124",
+      "saleAttrValueName": "珍珠白",
+      "baseSaleAttrId": "1",
+      "saleAttrName": "选择颜色"
+    },
+    {
+      "saleAttrValueId": "126",
+      "saleAttrValueName": "8+256G",
+      "baseSaleAttrId": "2",
+      "saleAttrName": "选择版本"
+    }
+  ],
+  "skuImageList": [
+    {
+      "spuImgId": 279,
+      "imgName": "3.png",
+      "imgUrl": "http://192.168.11.10:9000/gmall/2022-11-01/f96a593e8c43412eafd5b2c1150d0153_3.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 280,
+      "imgName": "4.png",
+      "imgUrl": "http://192.168.11.10:9000/gmall/2022-11-01/337fee9da6c84d199297d2dee4cddd10_4.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 281,
+      "imgName": "2.png",
+      "imgUrl": "http://192.168.11.10:9000/gmall/2022-11-01/1f2bfb5b0dc047f7bd81fc139cf5a8f1_2.png",
+      "isDefault": 1
+    },
+    {
+      "spuImgId": 282,
+      "imgName": "5.png",
+      "imgUrl": "http://192.168.11.10:9000/gmall/2022-11-01/33b4ab23f39445148abe5d1fdda03791_5.png",
+      "isDefault": 0
+    }
+  ]
+
+}

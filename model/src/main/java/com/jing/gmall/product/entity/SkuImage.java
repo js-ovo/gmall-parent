@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 库存单元图片表
@@ -48,7 +49,7 @@ public class SkuImage implements Serializable {
      * 是否默认
      */
     @TableField(value = "is_default")
-    private String isDefault;
+    private Integer isDefault;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

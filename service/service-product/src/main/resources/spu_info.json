@@ -1,0 +1,47 @@
+{
+  "id": null,
+  "spuName": "三星智能手机",
+  "description": "三星",
+  "category3Id": 61,
+  "tmId": 3,
+  "spuImageList": [
+    {
+      "imgName": "1.png",
+      "imgUrl": "http://192.168.11.10:9000/gmall/2022-11-01/7c2a74370457403b9711feb1970b2ab0_1.png"
+    }
+  ],
+  "spuSaleAttrList": [
+    {
+      "baseSaleAttrId": "1",
+      "saleAttrName": "选择颜色",
+      "spuSaleAttrValueList": [
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrValueName": "红"
+        },
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrValueName": "黄"
+        },
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrValueName": "绿"
+        }
+      ]
+    },
+    {
+      "baseSaleAttrId": "2",
+      "saleAttrName": "选择版本",
+      "spuSaleAttrValueList": [
+        {
+          "baseSaleAttrId": "2",
+          "saleAttrValueName": "6+128"
+        },
+        {
+          "baseSaleAttrId": "2",
+          "saleAttrValueName": "8+256"
+        }
+      ]
+    }
+  ]
+}
