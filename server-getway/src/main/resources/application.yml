@@ -22,6 +22,11 @@ spring:
           predicates:
             # 根据请求路径匹配
             - Path=/admin/product/**
+        - id: weball_route
+          uri: lb://web-all
+          predicates:
+            - Host=**.gmall.com,gmall.com
+
 
 # 公共抽取到zipkin.yaml发布在排至中心
 #spring:

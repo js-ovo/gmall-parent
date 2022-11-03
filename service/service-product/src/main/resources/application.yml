@@ -9,6 +9,9 @@ spring:
     username: root
     password: 131421
     driver-class-name: com.mysql.jdbc.Driver
+  zipkin:
+    sender:
+      type: web
 
 #Minio 相关配置
 app:

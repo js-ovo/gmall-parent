@@ -12,4 +12,53 @@
     <sql id="Base_Column_List">
         id,name
     </sql>
+    <resultMap id="CategoryVoRM" type="com.jing.gmall.weball.vo.CategoryVo">
+        <id property="categoryId" column="c1id"></id>
+        <result property="categoryName" column="c1name"></result>
+        <collection property="categoryChild" ofType="com.jing.gmall.weball.vo.CategoryVo">
+            <id property="categoryId" column="c2id"></id>
+            <result property="categoryName" column="c2name"></result>
+            <collection property="categoryChild" ofType="com.jing.gmall.weball.vo.CategoryVo">
+                <id property="categoryId" column="c3id"></id>
+                <result property="categoryName" column="c3name"></result>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="getCategoryTreeData" resultMap="CategoryVoRM">
+        select
+            bc1.id c1id,bc1.`name` c1name,
+            bc2.id c2id,bc2.`name` c2name,
+            bc3.id c3id,bc3.`name` c3name
+        from
+            `base_category1` bc1
+                left join base_category2 bc2 on bc1.id = bc2.category1_id
+                left join base_category3 bc3 on bc2.id = bc3.category2_id
+    </select>
+
+    <resultMap id="CategoryViewRM" type="com.jing.gmall.item.vo.CategoryView">
+        <id property="category1Id" column="c1id"></id>
+        <result property="category1Name" column="c1name"></result>
+        <result property="category2Id" column="c2id"></result>
+        <result property="category2Name" column="c2name"></result>
+        <result property="category3Id" column="c3id"></result>
+        <result property="category3Name" column="c3name"></result>
+    </resultMap>
+    <select id="getCategoryView" resultMap="CategoryViewRM">
+        select c1.id   c1id,
+               c1.name c1name,
+               c2.id   c2id,
+               c2.name c2name,
+               c3.id   c3id,
+               c3.name c3name
+        from base_category3 c3
+                 left join
+             base_category2 c2
+             on
+                 c3.category2_id = c2.id
+                 left join
+             base_category1 c1
+             on
+                 c2.category1_id = c1.id
+        where c3.id = #{category3Id}
+    </select>
 </mapper>

@@ -1,7 +1,7 @@
 package com.jing.gmall.product.service;
 
-import com.jing.gmall.product.entity.SpuSaleAttr;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jing.gmall.product.entity.SpuSaleAttr;
 
 import java.util.List;
 
@@ -14,4 +14,7 @@ public interface SpuSaleAttrService extends IService<SpuSaleAttr> {
 
     List<SpuSaleAttr> getSpuSaleAttrList(Long spuId);
 
+    List<SpuSaleAttr> getSpuSaleAttrAndValueListWithOrder(Long spuId,Long skuId);
+
+    String getSkuAttrValueJson(Long spuId);
 }
