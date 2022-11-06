@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -90,4 +91,19 @@ public class SkuRpcController {
         String json = spuSaleAttrService.getSkuAttrValueJson(spuId);
         return Result.ok(json);
     }
+
+    /**
+     * 查询对应商品的实时价格
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/skuInfo/price/{skuId}")
+    public Result<BigDecimal> getRealtimePrice(@PathVariable("skuId") Long skuId){
+        BigDecimal price = skuInfoService.getRealtimePrice(skuId);
+        return Result.ok(price);
+    }
+
+
+
+
 }

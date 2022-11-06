@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+
     @Transactional
     @Override
     public void saveSkuInfo(SkuInfoVo skuInfoVo) {
@@ -75,6 +77,16 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
             return skuSaleAttrValue;
         }).collect(Collectors.toList());
         skuSaleAttrValueService.saveBatch(skuSaleAttrValues);
+    }
+
+    @Override
+    public BigDecimal getRealtimePrice(Long skuId) {
+        return baseMapper.getRealtimePrice(skuId);
+    }
+
+    @Override
+    public List<Long> getSkuIds() {
+        return this.baseMapper.getSkuIds();
     }
 }
 
