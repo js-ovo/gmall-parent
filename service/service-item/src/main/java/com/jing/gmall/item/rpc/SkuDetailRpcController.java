@@ -27,6 +27,7 @@ public class SkuDetailRpcController {
     @GetMapping("/product/{skuId}")
     public Result<SkuDetailVo> getSkuDetail(@PathVariable("skuId") Long skuId){
         SkuDetailVo skuDetailVo = skuDetailService.getSkuDetail(skuId);
+
         return Result.ok(skuDetailVo);
     }
 }

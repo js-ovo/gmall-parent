@@ -4,6 +4,7 @@ import com.jing.gmall.product.entity.SkuInfo;
 import com.jing.gmall.product.entity.SpuSaleAttr;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,4 +29,8 @@ public class SkuDetailVo {
      * 其他json数据
      */
     private String valuesSkuJson;
+    /**
+     * 商品的实时价格
+     */
+    private BigDecimal price;
 }

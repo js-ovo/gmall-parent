@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @FeignClient("service-product")
@@ -53,4 +54,12 @@ public interface SkuFeignClient {
      */
     @GetMapping("/skuInfo/json/{spuId}")
     Result<String> getSkuJson(@PathVariable("spuId") Long spuId);
+
+    /**
+     * 查询对应商品的实时价格
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/skuInfo/price/{skuId}")
+    Result<BigDecimal> getRealtimePrice(@PathVariable("skuId") Long skuId);
 }

@@ -1,0 +1,18 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: '# 省略数据源配置，请参考使用手册'
+    rules:
+      readwrite-splitting:
+        data-sources:
+          rw-ds:
+            load-balancer-name: '# 负载均衡算法名称'
+            static-strategy:
+              read-data-source-names: '# 读库数据源列表，多个从数据源用逗号分隔'
+              write-data-source-name: '# 写库数据源名称'
+        load-balancers:
+          <load-balance-algorithm-name>:
+            props:
+              xxx: '# 负载均衡算法属性配置'
+            type: '# 负载均衡算法类型'
+

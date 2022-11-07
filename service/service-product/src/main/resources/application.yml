@@ -2,16 +2,66 @@ server:
   port: 7000
 
 spring:
-  datasource:
-    # 配置数据源
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://192.168.11.10:3306/gmall_product?useSSL=false
-    username: root
-    password: 131421
-    driver-class-name: com.mysql.jdbc.Driver
+  shardingsphere:
+    datasource:
+      # 数据源名称
+      names: master,s1,s2
+      # 配置数据源,名称和上面对应
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:mysql://192.168.11.10:3306/gmall_product?useSSL=false
+        username: root
+        password: 131421
+        driver-class-name: com.mysql.jdbc.Driver
+      s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:mysql://192.168.11.10:3307/gmall_product?useSSL=false
+        username: root
+        password: 131421
+        dirver-class-name: com.mysql.jdbc.Driver
+      s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:mysql://192.168.11.10:3308/gmall_product?useSSL=false
+        username: root
+        password: 131421
+        dirver-class-name: com.mysql.jdbc.Driver
+    rules:
+      readwrite-splitting:
+        data-sources:
+          # 读写分离配置名称 自己填写
+          rw-ds:
+            type: Static
+            props:
+              # 读的数据源名称
+              read-data-source-names: s1,s2
+              # 写的数据源名称
+              write-data-source-name: master
+            # 负载均衡算法名称 --自定义
+            load-balancer-name: round_robin
+        load-balancers:
+          # 负载均衡算法配置 名称和load-balancer-name对应
+          round_robin:
+            # 负载均衡算法类型,官网查找
+            type: ROUND_ROBIN
+
   zipkin:
     sender:
       type: web
+#  datasource:
+#    # 配置数据源
+#    type: com.zaxxer.hikari.HikariDataSource
+#    url: jdbc:mysql://192.168.11.10:3306/gmall_product?useSSL=false
+#    username: root
+#    password: 131421
+#    driver-class-name: com.mysql.jdbc.Driver
+# 抽取到nacos公共配置中
+#  redis:
+#    host: 192.168.11.10
+#    port: 6379
+#    password: 131421
+
+
+
 
 #Minio 相关配置
 app:
