@@ -48,9 +48,9 @@ public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, B
         if (!StringUtils.isEmpty(categorys)){
             // 缓存命中
             List<CategoryVo> list = JSON.parseArray(categorys, CategoryVo.class);
-//            log.info("categorys-array: {}" ,categoryVos);
-//            List<CategoryVo> list = JSON.parseObject(categorys, new TypeReference<List<CategoryVo>>() {});
-//            log.info("categorys-object: {}" ,list);
+//            log.info("categorys-array: {}",list);
+//            List<CategoryVo> list1 = JSON.parseObject(categorys, new TypeReference<List<CategoryVo>>() {});
+//            log.info("categorys-object: {}" ,list1);
             return list;
         }
         // 缓存未命中 数据回溯

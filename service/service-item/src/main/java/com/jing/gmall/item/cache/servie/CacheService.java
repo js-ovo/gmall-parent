@@ -1,4 +1,4 @@
-package com.jing.gmall.item.service;
+package com.jing.gmall.item.cache.servie;
 
 import com.jing.gmall.item.vo.SkuDetailVo;
 

@@ -1,8 +1,8 @@
-package com.jing.gmall.item.service.impl;
+package com.jing.gmall.item.cache.servie.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.jing.gmall.common.constant.RedisConst;
-import com.jing.gmall.item.service.CacheService;
+import com.jing.gmall.item.cache.servie.CacheService;
 import com.jing.gmall.item.vo.SkuDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
