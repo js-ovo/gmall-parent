@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -30,6 +32,9 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     private CacheService cacheService;
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private ThreadPoolExecutor poolExecutor; //自定义线程池
 
 
     /**
@@ -111,26 +116,65 @@ public class SkuDetailServiceImpl implements SkuDetailService {
      * @return
      */
 
+    //服务调用关系
+    /** -获取商品详情信息
+     *      获取商品分类信息
+     *      获取商品图片信息
+     *      获取商品的销售属性
+     *      获取组合信息
+     *  - 获取商品实时价格
+     *
+     *      异步调用优化
+     */
     public SkuDetailVo getSkuDetailVoFromRpc(Long skuId) {
+
         SkuDetailVo skuDetailVo = new SkuDetailVo();
         // 获取商品的基本信息
-        SkuInfo skuInfo = skuFeignClient.getSkuInfo(skuId).getData();
-        // 获取商品分类完整路径
-        CategoryView categoryView = skuFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
+        CompletableFuture<SkuInfo> skuInfoAsync = CompletableFuture.supplyAsync(() -> {
+            log.info("skuInfoAsync:{}", Thread.currentThread().getName());
+            return skuFeignClient.getSkuInfo(skuId).getData();
+        }, poolExecutor);
+
         // 获取商品的所有图片信息
-        List<SkuImage> images = skuFeignClient.getSkuImages(skuId).getData();
-        skuInfo.setSkuImageList(images);
+        CompletableFuture<Void> imageAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
+            List<SkuImage> images = skuFeignClient.getSkuImages(skuId).getData();
+            skuInfo.setSkuImageList(images);
+            log.info("imageAsync:{}",Thread.currentThread().getName());
+            skuDetailVo.setSkuInfo(skuInfo);
+        }, poolExecutor);
+
+        // 获取商品分类完整路径
+        CompletableFuture<Void> categoryViewAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
+            CategoryView categoryView = skuFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
+            skuDetailVo.setCategoryView(categoryView);
+            log.info("{}",Thread.currentThread().getName());
+        },poolExecutor);
+
         // 获取商品的所有销售属性
-        List<SpuSaleAttr> spuSaleAttrs = skuFeignClient.getSpuSaleAttrAndValue(skuInfo.getSpuId(), skuId).getData();
+        CompletableFuture<Void> spuSaleAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
+            List<SpuSaleAttr> spuSaleAttrs = skuFeignClient.getSpuSaleAttrAndValue(skuInfo.getSpuId(), skuId).getData();
+            skuDetailVo.setSpuSaleAttrList(spuSaleAttrs);
+            log.info("spuSaleAsync:{}",Thread.currentThread().getName());
+        }, poolExecutor);
+
         // 获取skuJson
-        String json = skuFeignClient.getSkuJson(skuInfo.getSpuId()).getData();
+        CompletableFuture<Void> jsonAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
+            String json = skuFeignClient.getSkuJson(skuInfo.getSpuId()).getData();
+            skuDetailVo.setValuesSkuJson(json);
+            log.info("jsonAsync:{}",Thread.currentThread().getName());
+        }, poolExecutor);
+
+
         // 获取商品的实时价格
-        BigDecimal price  = skuFeignClient.getRealtimePrice(skuId).getData();
-        skuDetailVo.setSpuSaleAttrList(spuSaleAttrs);
-        skuDetailVo.setSkuInfo(skuInfo);
-        skuDetailVo.setCategoryView(categoryView);
-        skuDetailVo.setValuesSkuJson(json);
-        skuDetailVo.setPrice(price);
+        CompletableFuture<Void> priceAsync = CompletableFuture.runAsync(() -> {
+            BigDecimal price = skuFeignClient.getRealtimePrice(skuId).getData();
+            skuDetailVo.setPrice(price);
+            log.info("priceAsync:{}",Thread.currentThread().getName());
+        }, poolExecutor);
+
+        CompletableFuture.allOf(categoryViewAsync,imageAsync,spuSaleAsync,jsonAsync,priceAsync)
+                .join();
+
         return skuDetailVo;
     }
 }

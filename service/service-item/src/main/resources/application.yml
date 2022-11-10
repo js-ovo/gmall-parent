@@ -5,8 +5,17 @@ spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
+
 # 抽取到公共配置中了
 #  redis:
 #    host: 192.168.11.10
 #    password: 131421
 #    port: 6379
+app:
+  pool:
+    core-pool-size: 8
+    maximum-pool-size: 24
+    keep-alive-time: 5
+    queue-length: 500
+
+# 自定义线程配置
