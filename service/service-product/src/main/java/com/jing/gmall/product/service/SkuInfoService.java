@@ -19,4 +19,6 @@ public interface SkuInfoService extends IService<SkuInfo> {
     BigDecimal getRealtimePrice(Long skuId);
 
     List<Long> getSkuIds();
+
+    void removeSku(Long skuId);
 }

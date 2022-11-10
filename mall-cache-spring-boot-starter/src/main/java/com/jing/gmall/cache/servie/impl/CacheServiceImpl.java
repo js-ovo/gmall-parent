@@ -10,6 +10,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -19,6 +21,9 @@ public class CacheServiceImpl implements CacheService {
     private StringRedisTemplate stringRedisTemplate;
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+    // 延迟任务线程池
+    ScheduledExecutorService  scheduled = Executors.newScheduledThreadPool(10);
 
 
 //    /**
@@ -95,6 +100,19 @@ public class CacheServiceImpl implements CacheService {
     }
 
 
+    /**
+     * 延迟双删 保持数据一致性
+     * @param cacheKey
+     */
+    @Override
+    public void delayedDoubleDel(String cacheKey) {
+        // 先删除一次
+        stringRedisTemplate.delete(cacheKey);
+
+        // 十秒钟之后再删除一次
+        scheduled.schedule(() -> stringRedisTemplate.delete(cacheKey)
+        ,10,TimeUnit.SECONDS);
+    }
 
 
     /**

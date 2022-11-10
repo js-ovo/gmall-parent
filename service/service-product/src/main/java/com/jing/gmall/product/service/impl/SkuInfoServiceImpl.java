@@ -1,6 +1,8 @@
 package com.jing.gmall.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jing.gmall.cache.servie.CacheService;
+import com.jing.gmall.common.constant.RedisConst;
 import com.jing.gmall.product.entity.SkuAttrValue;
 import com.jing.gmall.product.entity.SkuImage;
 import com.jing.gmall.product.entity.SkuInfo;
@@ -13,6 +15,7 @@ import com.jing.gmall.product.service.SkuSaleAttrValueService;
 import com.jing.gmall.product.vo.SkuInfoVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,11 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    private CacheService cacheService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Transactional
     @Override
@@ -77,6 +85,9 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
             return skuSaleAttrValue;
         }).collect(Collectors.toList());
         skuSaleAttrValueService.saveBatch(skuSaleAttrValues);
+        //TODO 缓存bitmap中也存入
+        stringRedisTemplate.opsForValue().setBit(RedisConst.SKUID_BITMAP_KEY,skuId,true);
+
     }
 
     @Override
@@ -87,6 +98,18 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     @Override
     public List<Long> getSkuIds() {
         return this.baseMapper.getSkuIds();
+    }
+
+    @Override
+    public void removeSku(Long skuId) {
+        // 删除数据库信息
+        removeById(skuId);
+        // 删除其他与之关联的信息
+        // 双删缓存
+        cacheService.delayedDoubleDel(RedisConst.SKU_INFO_CACHE_KEY + skuId);
+
+        //TODO 删除bitmap中
+        stringRedisTemplate.opsForValue().setBit(RedisConst.SKUID_BITMAP_KEY,skuId,false);
     }
 }
 

@@ -63,4 +63,11 @@ public class SkuController {
         skuInfoService.updateById(skuInfo);
         return Result.ok();
     }
+
+
+    @DeleteMapping("/deleteSku/{skuId}")
+    public Result deleteSku(@PathVariable("skuId") Long skuId){
+        skuInfoService.removeSku(skuId);
+        return Result.ok();
+    }
 }
