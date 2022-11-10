@@ -139,8 +139,6 @@ public class TestDistLockController {
 
 
 
-
-
     // 自定义分布式锁
     public Result mylock(){
         redisDistLock.lock();

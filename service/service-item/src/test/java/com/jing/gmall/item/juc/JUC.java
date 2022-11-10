@@ -1,6 +1,6 @@
 package com.jing.gmall.item.juc;
 
-import com.jing.gmall.item.cache.servie.CacheService;
+import com.jing.gmall.cache.servie.CacheService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

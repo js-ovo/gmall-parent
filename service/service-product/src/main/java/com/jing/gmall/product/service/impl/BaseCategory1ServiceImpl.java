@@ -2,6 +2,8 @@ package com.jing.gmall.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jing.gmall.cache.annotation.MallCache;
+import com.jing.gmall.common.constant.RedisConst;
 import com.jing.gmall.item.vo.CategoryView;
 import com.jing.gmall.product.entity.BaseCategory1;
 import com.jing.gmall.product.mapper.BaseCategory1Mapper;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
 * @author Jing
@@ -36,29 +39,7 @@ public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, B
     @Autowired
     private BaseCategory1Mapper baseCategory1Mapper;
 
-    /**
-     * 获取所有 分类列表的树型信息
-     * @return
-     */
-    //分布式缓存redis
-    @Override
-    public List<CategoryVo> getCategoryTreeData() {
-        //先去缓存中查找
-        String categorys = stringRedisTemplate.opsForValue().get("categorys");
-        if (!StringUtils.isEmpty(categorys)){
-            // 缓存命中
-            List<CategoryVo> list = JSON.parseArray(categorys, CategoryVo.class);
-//            log.info("categorys-array: {}",list);
-//            List<CategoryVo> list1 = JSON.parseObject(categorys, new TypeReference<List<CategoryVo>>() {});
-//            log.info("categorys-object: {}" ,list1);
-            return list;
-        }
-        // 缓存未命中 数据回溯
-        List<CategoryVo> treeData = baseCategory1Mapper.getCategoryTreeData();
-        // 无论是否查询到值 都进行回溯,防止 缓存穿透
-        stringRedisTemplate.opsForValue().set("categorys", JSON.toJSONString(treeData));
-        return treeData;
-    }
+
 
 
     // 使用本地缓存
@@ -77,6 +58,41 @@ public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, B
     }
 
 
+    /**
+     * 获取所有 分类列表的树型信息
+     * @return
+     */
+    @MallCache(cacheKey = RedisConst.CATEGORY_CACHE_KEY,
+    timeout = 7,
+    unit = TimeUnit.DAYS)
+    @Override
+    public List<CategoryVo> getCategoryTreeData() {
+        return baseCategory1Mapper.getCategoryTreeData();
+    }
+
+
+    /**
+     * 获取所有 分类列表的树型信息
+     * @return
+     */
+    //分布式缓存redis
+    public List<CategoryVo> getCategoryTreeDataWithCache() {
+        //先去缓存中查找
+        String categorys = stringRedisTemplate.opsForValue().get("categorys");
+        if (!StringUtils.isEmpty(categorys)){
+            // 缓存命中
+            List<CategoryVo> list = JSON.parseArray(categorys, CategoryVo.class);
+//            log.info("categorys-array: {}",list);
+//            List<CategoryVo> list1 = JSON.parseObject(categorys, new TypeReference<List<CategoryVo>>() {});
+//            log.info("categorys-object: {}" ,list1);
+            return list;
+        }
+        // 缓存未命中 数据回溯
+        List<CategoryVo> treeData = baseCategory1Mapper.getCategoryTreeData();
+        // 无论是否查询到值 都进行回溯,防止 缓存穿透
+        stringRedisTemplate.opsForValue().set("categorys", JSON.toJSONString(treeData));
+        return treeData;
+    }
 
     /**
      * 获取某个商品对应的全部分类信息

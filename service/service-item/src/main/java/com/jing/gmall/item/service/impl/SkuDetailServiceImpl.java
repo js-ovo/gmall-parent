@@ -1,9 +1,9 @@
 package com.jing.gmall.item.service.impl;
 
+import com.jing.gmall.cache.annotation.MallCache;
+import com.jing.gmall.cache.servie.CacheService;
 import com.jing.gmall.common.constant.RedisConst;
-import com.jing.gmall.item.cache.annotation.MallCache;
 import com.jing.gmall.item.feign.SkuFeignClient;
-import com.jing.gmall.item.cache.servie.CacheService;
 import com.jing.gmall.item.service.SkuDetailService;
 import com.jing.gmall.item.vo.CategoryView;
 import com.jing.gmall.item.vo.SkuDetailVo;
@@ -37,7 +37,11 @@ public class SkuDetailServiceImpl implements SkuDetailService {
      * @param skuId
      * @return
      */
-    @MallCache
+    @MallCache(cacheKey = RedisConst.SKU_INFO_CACHE_KEY + "#{#skuId}"
+    ,bitMapKey = RedisConst.SKUID_BITMAP_KEY
+    ,bitIndex = "#{#skuId}"
+    ,timeout = 30
+    ,unit = TimeUnit.MINUTES)
     @Override
     public SkuDetailVo getSkuDetail(Long skuId) {
         return getSkuDetailVoFromRpc(skuId);
@@ -52,14 +56,14 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         String cacheKey = "sku:info:" + skuId;
         //从缓存中查询数据
-        SkuDetailVo cacheData = cacheService.getCacheData(cacheKey);
+        SkuDetailVo cacheData = cacheService.getCacheDataObj(cacheKey,SkuDetailVo.class);
         //缓存命中 直接返回
         if (cacheData != null){
             return cacheData;
         }
         // 缓存未命中
         // 去bitMap中查找是否有该商品信息
-        boolean isExist = cacheService.existSkuIdBitMap(skuId);
+        boolean isExist = cacheService.exitBitMap(RedisConst.SKUID_BITMAP_KEY,skuId);
         // 有 -> 远程调用查询
         if (isExist){
             log.info("位图判断,含有[{}]号商品,去数据库查询",skuId);
@@ -72,11 +76,11 @@ public class SkuDetailServiceImpl implements SkuDetailService {
                 // 获取到锁
                 try {
                     // 远程调用 获取数据
-                    SkuDetailVo skuDetailVo = getSkuDetailVoFromRpc(skuId);
+                    //SkuDetailVo skuDetailVo = getSkuDetailVoFromRpc(skuId);
                     // 数据存入缓存
-                    cacheService.saveCache(cacheKey,skuDetailVo);
+                    //cacheService.saveCache(cacheKey,skuDetailVo);
                     // 返回数据
-                    return skuDetailVo;
+                    //return skuDetailVo;
                 } finally {
                     lock.unlock();
                 }
@@ -87,7 +91,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
                     // 睡1会儿
                     TimeUnit.MILLISECONDS.sleep(300);
                     // 再次查询缓存返回
-                    return getSkuDetailVoFromRpc(skuId);
+                    //return getSkuDetailVoFromRpc(skuId);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -106,7 +110,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
      * @param skuId
      * @return
      */
-    private SkuDetailVo getSkuDetailVoFromRpc(Long skuId) {
+
+    public SkuDetailVo getSkuDetailVoFromRpc(Long skuId) {
         SkuDetailVo skuDetailVo = new SkuDetailVo();
         // 获取商品的基本信息
         SkuInfo skuInfo = skuFeignClient.getSkuInfo(skuId).getData();

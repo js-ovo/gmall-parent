@@ -21,6 +21,7 @@
         <module>model</module>
         <module>service</module>
         <module>server-getway</module>
+        <module>mall-cache-spring-boot-starter</module>
     </modules>
 
     <!--定义依赖版本号-->

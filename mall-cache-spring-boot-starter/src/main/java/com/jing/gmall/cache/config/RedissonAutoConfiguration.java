@@ -1,4 +1,4 @@
-package com.jing.gmall.item.config;
+package com.jing.gmall.cache.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
