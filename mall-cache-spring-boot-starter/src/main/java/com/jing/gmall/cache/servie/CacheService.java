@@ -20,6 +20,6 @@ public interface CacheService {
 
     boolean exitBitMap(String bitmapKey, Long index);
 
-
+    void delayedDoubleDel(String cacheKey);
 
 }
