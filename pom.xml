@@ -20,7 +20,7 @@
         <module>common</module>
         <module>model</module>
         <module>service</module>
-        <module>server-getway</module>
+        <module>server-gateway</module>
         <module>mall-cache-spring-boot-starter</module>
     </modules>
 

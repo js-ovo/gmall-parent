@@ -1,4 +1,4 @@
-package com.jing.gmall.item.feign;
+package com.jing.gmall.feignclients.product;
 
 import com.jing.gmall.common.result.Result;
 import com.jing.gmall.item.vo.CategoryView;

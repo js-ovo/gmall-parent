@@ -1,4 +1,4 @@
-package com.jing.gmall.weball.feign;
+package com.jing.gmall.feignclients.item;
 
 import com.jing.gmall.common.result.Result;
 import com.jing.gmall.item.vo.SkuDetailVo;

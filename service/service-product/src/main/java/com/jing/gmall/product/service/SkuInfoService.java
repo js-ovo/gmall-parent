@@ -21,4 +21,8 @@ public interface SkuInfoService extends IService<SkuInfo> {
     List<Long> getSkuIds();
 
     void removeSku(Long skuId);
+
+    void onSale(Long skuId);
+
+    void cancelSale(Long skuId);
 }

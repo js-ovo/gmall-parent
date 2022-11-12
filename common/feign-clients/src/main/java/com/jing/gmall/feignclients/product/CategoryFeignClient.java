@@ -1,4 +1,4 @@
-package com.jing.gmall.weball.feign;
+package com.jing.gmall.feignclients.product;
 
 import com.jing.gmall.common.result.Result;
 import com.jing.gmall.weball.vo.CategoryVo;

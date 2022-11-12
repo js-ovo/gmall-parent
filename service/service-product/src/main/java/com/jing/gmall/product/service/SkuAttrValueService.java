@@ -2,6 +2,9 @@ package com.jing.gmall.product.service;
 
 import com.jing.gmall.product.entity.SkuAttrValue;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jing.gmall.search.entity.SearchAttr;
+
+import java.util.List;
 
 /**
 * @author Jing
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SkuAttrValueService extends IService<SkuAttrValue> {
 
+    List<SearchAttr> getSkuAttrNameAndValue(Long skuId);
 }

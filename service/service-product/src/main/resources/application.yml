@@ -70,3 +70,9 @@ app:
     endpoint: http://192.168.11.10:9000
     access-key: admin
     secret-key: admin123456
+  # 自定义线程池参数
+  pool:
+    core-pool-size: 16
+    maximum-pool-size: 24
+    keep-alive-time: 5
+    queue-length: 1000

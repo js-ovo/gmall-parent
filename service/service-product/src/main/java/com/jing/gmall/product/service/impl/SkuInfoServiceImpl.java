@@ -3,16 +3,14 @@ package com.jing.gmall.product.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jing.gmall.cache.servie.CacheService;
 import com.jing.gmall.common.constant.RedisConst;
-import com.jing.gmall.product.entity.SkuAttrValue;
-import com.jing.gmall.product.entity.SkuImage;
-import com.jing.gmall.product.entity.SkuInfo;
-import com.jing.gmall.product.entity.SkuSaleAttrValue;
+import com.jing.gmall.feignclients.search.SearchFeignClient;
+import com.jing.gmall.item.vo.CategoryView;
+import com.jing.gmall.product.entity.*;
 import com.jing.gmall.product.mapper.SkuInfoMapper;
-import com.jing.gmall.product.service.SkuAttrValueService;
-import com.jing.gmall.product.service.SkuImageService;
-import com.jing.gmall.product.service.SkuInfoService;
-import com.jing.gmall.product.service.SkuSaleAttrValueService;
+import com.jing.gmall.product.service.*;
 import com.jing.gmall.product.vo.SkuInfoVo;
+import com.jing.gmall.search.entity.Goods;
+import com.jing.gmall.search.entity.SearchAttr;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,7 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +46,18 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     private CacheService cacheService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private SearchFeignClient searchFeignClient;
+
+    @Autowired
+    private BaseTrademarkService baseTrademarkService;
+
+    @Autowired
+    private BaseCategory1Service baseCategory1Service;
+
+    @Autowired
+    private ThreadPoolExecutor poolExecutor;
 
     @Transactional
     @Override
@@ -105,11 +118,93 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         // 删除数据库信息
         removeById(skuId);
         // 删除其他与之关联的信息
-        // 双删缓存
+
         cacheService.delayedDoubleDel(RedisConst.SKU_INFO_CACHE_KEY + skuId);
 
         //TODO 删除bitmap中
         stringRedisTemplate.opsForValue().setBit(RedisConst.SKUID_BITMAP_KEY,skuId,false);
+    }
+
+    /**
+     * 上架
+     * @param skuId
+     */
+    @Override
+    public void onSale(Long skuId) {
+        // 修改状态
+        updateSkuSaleStatus(skuId,1);
+        // 向es中添加数据
+        // 封装Goods
+        Goods goods = prepareGoods(skuId);
+        searchFeignClient.saveGoods(goods);
+
+    }
+
+
+    /**
+     * 将以sku信息封装成Goods存入 es
+     * @param skuId
+     * @return
+     */
+    private Goods prepareGoods(Long skuId) {
+        Goods goods = new Goods();
+
+        CompletableFuture<SkuInfo> skuInfoAsync = CompletableFuture.supplyAsync(() -> getById(skuId), poolExecutor);
+
+        CompletableFuture<Void> trademarkAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
+            goods.setId(skuInfo.getId());
+            goods.setDefaultImg(skuInfo.getSkuDefaultImg());
+            goods.setTitle(skuInfo.getSkuName());
+            goods.setPrice(skuInfo.getPrice().doubleValue());
+            goods.setCreateTime(new Date());
+            //TODO 查询品牌
+            BaseTrademark trademark = baseTrademarkService.getById(skuInfo.getTmId());
+            goods.setTmId(skuInfo.getTmId());
+            goods.setTmName(trademark.getTmName());
+            goods.setTmLogoUrl(trademark.getLogoUrl());
+        }, poolExecutor);
+
+        //TODO 商品三级分类
+        CompletableFuture<Void> categoryViewAsync = CompletableFuture.runAsync(() -> {
+            CategoryView categoryView = baseCategory1Service.getCategoryView(skuId);
+            goods.setCategory1Id(categoryView.getCategory1Id());
+            goods.setCategory1Name(categoryView.getCategory1Name());
+            goods.setCategory2Id(categoryView.getCategory2Id());
+            goods.setCategory2Name(categoryView.getCategory2Name());
+            goods.setCategory3Id(categoryView.getCategory3Id());
+            goods.setCategory3Name(categoryView.getCategory3Name());
+        },poolExecutor);
+
+        goods.setHotScore(0L);
+
+        //TODO  属性
+
+        CompletableFuture<Void> attrsAsync = CompletableFuture.runAsync(() -> {
+            List<SearchAttr> attrs = skuAttrValueService.getSkuAttrNameAndValue(skuId);
+            goods.setAttrs(attrs);
+        }, poolExecutor);
+
+        CompletableFuture.allOf(trademarkAsync,categoryViewAsync,attrsAsync).join();
+
+        return goods;
+    }
+
+
+    /**
+     * 下架
+     * @param skuId
+     */
+    @Override
+    public void cancelSale(Long skuId) {
+        // 修改状态
+        updateSkuSaleStatus(skuId,0);
+        // 从es中删除数据
+        searchFeignClient.deleteGoods(skuId);
+    }
+
+
+    private void updateSkuSaleStatus(Long skuId,Integer status){
+        baseMapper.updateSkuSaleStatus(skuId,status);
     }
 }
 

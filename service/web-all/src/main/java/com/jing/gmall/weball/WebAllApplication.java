@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 //@EnableDiscoveryClient
 //@EnableCircuitBreaker
 @SpringCloudApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.jing.gmall.feignclients")
 public class WebAllApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebAllApplication.class,args);

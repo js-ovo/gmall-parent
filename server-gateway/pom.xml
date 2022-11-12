@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>server-getway</artifactId>
+    <artifactId>server-gateway</artifactId>
     <description>接收前端发送的请求,负载均衡转发给其他的微服务,统一的限 鉴权</description>
 
     <properties>

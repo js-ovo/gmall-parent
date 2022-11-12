@@ -3,7 +3,7 @@ package com.jing.gmall.item.service.impl;
 import com.jing.gmall.cache.annotation.MallCache;
 import com.jing.gmall.cache.servie.CacheService;
 import com.jing.gmall.common.constant.RedisConst;
-import com.jing.gmall.item.feign.SkuFeignClient;
+import com.jing.gmall.feignclients.product.SkuFeignClient;
 import com.jing.gmall.item.service.SkuDetailService;
 import com.jing.gmall.item.vo.CategoryView;
 import com.jing.gmall.item.vo.SkuDetailVo;

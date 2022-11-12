@@ -18,6 +18,8 @@ public interface SkuInfoMapper extends BaseMapper<SkuInfo> {
     BigDecimal getRealtimePrice(@Param("skuId") Long skuId);
 
     List<Long> getSkuIds();
+
+    void updateSkuSaleStatus(@Param("skuId") Long skuId, @Param("status") Integer status);
 }
 
 

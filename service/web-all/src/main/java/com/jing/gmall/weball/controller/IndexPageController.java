@@ -1,7 +1,7 @@
 package com.jing.gmall.weball.controller;
 
 
-import com.jing.gmall.weball.feign.CategoryFeignClient;
+import com.jing.gmall.feignclients.product.CategoryFeignClient;
 import com.jing.gmall.weball.vo.CategoryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

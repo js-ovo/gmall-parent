@@ -1,7 +1,7 @@
 package com.jing.gmall.weball.controller;
 
+import com.jing.gmall.feignclients.item.SkuDetailFeignClient;
 import com.jing.gmall.item.vo.SkuDetailVo;
-import com.jing.gmall.weball.feign.SkuDetailFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
