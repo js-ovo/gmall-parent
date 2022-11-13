@@ -29,9 +29,9 @@ public class SearchParamVo {
      */
     private String trademark;
     /**
-     * 商品的排序信息
+     * 商品的排序信息 默认按照 热度降序
      */
-    private String order;
+    private String order = "1:desc";
     /**
      * 商品的平台属性信息  电池容量    运行内存
      */

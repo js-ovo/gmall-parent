@@ -165,8 +165,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         }, poolExecutor);
 
         //TODO 商品三级分类
-        CompletableFuture<Void> categoryViewAsync = CompletableFuture.runAsync(() -> {
-            CategoryView categoryView = baseCategory1Service.getCategoryView(skuId);
+        CompletableFuture<Void> categoryViewAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
+            CategoryView categoryView = baseCategory1Service.getCategoryView(skuInfo.getCategory3Id());
             goods.setCategory1Id(categoryView.getCategory1Id());
             goods.setCategory1Name(categoryView.getCategory1Name());
             goods.setCategory2Id(categoryView.getCategory2Id());

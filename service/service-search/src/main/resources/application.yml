@@ -8,3 +8,6 @@ spring:
     rest:
       uris:
         - http://192.168.11.10:9200
+logging:
+  level:
+    tracer: trace  #打开追踪器，看发送请求的详细数据

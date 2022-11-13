@@ -26,6 +26,7 @@ spring:
           uri: lb://web-all
           predicates:
             - Host=**.gmall.com,gmall.com
+
         - id: item_route
           uri: lb://service-item
           predicates:

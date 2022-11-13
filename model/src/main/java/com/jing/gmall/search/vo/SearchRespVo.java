@@ -94,17 +94,17 @@ public class SearchRespVo {
     }
 
     /**
-     * 排序
+     * 排序  默认按照热度降序
      */
     @Data
     public static class OrderMap {
         /**
          * 排序类型  综合 价格等   1-2取值
          */
-        private String type;
+        private String type = "1";
         /**
          * 排序方式 desc asc
          */
-        private String sort;
+        private String sort = "desc";
     }
 }
