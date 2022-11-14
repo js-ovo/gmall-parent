@@ -15,9 +15,16 @@ spring:
 #    port: 6379
 app:
   pool:
-    core-pool-size: 8
+    core-pool-size: 16
     maximum-pool-size: 24
     keep-alive-time: 5
-    queue-length: 500
+    queue-length: 5000
 
 # 自定义线程配置
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000

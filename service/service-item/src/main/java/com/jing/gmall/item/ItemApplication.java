@@ -10,7 +10,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * 商品详情
  */
 @SpringCloudApplication
-@EnableFeignClients("com.jing.gmall.feignclients.product")
+@EnableFeignClients(basePackages = {"com.jing.gmall.feignclients.product",
+        "com.jing.gmall.feignclients.search"})
 @EnableAspectJAutoProxy // 开启aop
 @EnableThreadPool // 开启使用自定义线程池
 public class ItemApplication {

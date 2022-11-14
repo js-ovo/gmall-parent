@@ -4,4 +4,6 @@ import com.jing.gmall.item.vo.SkuDetailVo;
 
 public interface SkuDetailService {
     SkuDetailVo getSkuDetail(Long skuId);
+
+    void updateHotScore(Long skuId);
 }

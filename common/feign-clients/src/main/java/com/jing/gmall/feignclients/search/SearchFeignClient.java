@@ -37,4 +37,14 @@ public interface SearchFeignClient {
     @DeleteMapping("/goods/delete/{skuId}")
     Result deleteGoods(@PathVariable("skuId") Long skuId);
 
+    /**
+     * 更新es中商品的 热度评分
+     * @param skuId
+     * @param hotScore
+     * @return
+     */
+    @PutMapping("/goods/updateHotScore/{skuId}/{hotScore}")
+    Result updateHotScore(@PathVariable("skuId") Long skuId,
+                                 @PathVariable("hotScore") Long hotScore);
+
 }

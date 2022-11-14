@@ -25,10 +25,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -337,6 +339,25 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public void saveGoods(Goods goods) {
         goodsRepository.save(goods);
+    }
+
+
+    /**
+     * 更新商品的热度分
+     * @param skuId
+     * @param hotScore
+     */
+    @Override
+    public void updateHotScore(Long skuId, Long hotScore) {
+        Document document = Document.create();
+
+        document.append("hotScore",hotScore);
+
+        UpdateQuery query = UpdateQuery.builder(skuId + "")
+                .withDocAsUpsert(true)
+                .withDocument(document)
+                .build();
+        elasticsearchRestTemplate.update(query,IndexCoordinates.of("goods"));
     }
 
 }

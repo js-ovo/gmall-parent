@@ -51,5 +51,19 @@ public class SearchRpcController {
     }
 
 
+    /**
+     * 更新es中商品的 热度评分
+     * @param skuId
+     * @param hotScore
+     * @return
+     */
+    @PutMapping("/goods/updateHotScore/{skuId}/{hotScore}")
+    public Result updateHotScore(@PathVariable("skuId") Long skuId,
+                                 @PathVariable("hotScore") Long hotScore){
+        searchService.updateHotScore(skuId,hotScore);
+        return Result.ok();
+    }
+
+
 
 }
