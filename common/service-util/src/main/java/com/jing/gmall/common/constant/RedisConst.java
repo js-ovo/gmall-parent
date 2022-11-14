@@ -16,4 +16,7 @@ public class RedisConst {
     /** 商品全部分类的key*/
     public static final String CATEGORY_CACHE_KEY = "category";
 
+    public static final String HOT_SCORE_KEY = "hotscore:";
+    public static final String USER_LOGIN_KEY = "user:info:";
+    public static final long USER_AUTH_TTL = 7;
 }

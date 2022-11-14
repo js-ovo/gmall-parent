@@ -22,6 +22,12 @@ spring:
           predicates:
             # 根据请求路径匹配
             - Path=/admin/product/**
+        - id: user_route
+          uri: lb://service-user
+          predicates:
+            - Path=/api/user/**
+
+
         - id: weball_route
           uri: lb://web-all
           predicates:
@@ -31,6 +37,8 @@ spring:
           uri: lb://service-item
           predicates:
             - Path=/api/inner/rpc/item/**
+
+
 
 
 # 公共抽取到zipkin.yaml发布在排至中心

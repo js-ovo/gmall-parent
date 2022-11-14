@@ -27,6 +27,8 @@ public class SkuDetailRpcController {
     @GetMapping("/product/{skuId}")
     public Result<SkuDetailVo> getSkuDetail(@PathVariable("skuId") Long skuId){
         SkuDetailVo skuDetailVo = skuDetailService.getSkuDetail(skuId);
+        //每查看一次商品详情 热度 +1
+        skuDetailService.updateHotScore(skuId);
         return Result.ok(skuDetailVo);
     }
 

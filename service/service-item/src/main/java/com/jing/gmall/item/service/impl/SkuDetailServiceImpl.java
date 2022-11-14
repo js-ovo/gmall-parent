@@ -4,6 +4,7 @@ import com.jing.gmall.cache.annotation.MallCache;
 import com.jing.gmall.cache.servie.CacheService;
 import com.jing.gmall.common.constant.RedisConst;
 import com.jing.gmall.feignclients.product.SkuFeignClient;
+import com.jing.gmall.feignclients.search.SearchFeignClient;
 import com.jing.gmall.item.service.SkuDetailService;
 import com.jing.gmall.item.vo.CategoryView;
 import com.jing.gmall.item.vo.SkuDetailVo;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,9 +34,14 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     private CacheService cacheService;
     @Autowired
     private RedissonClient redissonClient;
+    @Autowired
+    private SearchFeignClient searchFeignClient;
 
     @Autowired
     private ThreadPoolExecutor poolExecutor; //自定义线程池
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
 
     /**
@@ -50,6 +57,24 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Override
     public SkuDetailVo getSkuDetail(Long skuId) {
         return getSkuDetailVoFromRpc(skuId);
+    }
+
+
+    /**
+     * 更新 商品的热点数据  异步更新
+     * @param skuId
+     */
+    @Override
+    public void updateHotScore(Long skuId) {
+
+        CompletableFuture.runAsync(() -> {
+            log.info("更新商品热度中");
+            Long hotScore = stringRedisTemplate.opsForValue().increment(RedisConst.HOT_SCORE_KEY + skuId);
+            if (hotScore % 100 == 0){
+                // 调用 search-service 进行更新
+                searchFeignClient.updateHotScore(skuId,hotScore);
+            }
+        },poolExecutor);
     }
 
     /**
@@ -147,7 +172,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         CompletableFuture<Void> categoryViewAsync = skuInfoAsync.thenAcceptAsync(skuInfo -> {
             CategoryView categoryView = skuFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
             skuDetailVo.setCategoryView(categoryView);
-            log.info("{}",Thread.currentThread().getName());
+            log.info("categoryViewAsync: {}",Thread.currentThread().getName());
         },poolExecutor);
 
         // 获取商品的所有销售属性
@@ -172,7 +197,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             log.info("priceAsync:{}",Thread.currentThread().getName());
         }, poolExecutor);
 
-        CompletableFuture.allOf(categoryViewAsync,imageAsync,spuSaleAsync,jsonAsync,priceAsync)
+
+        CompletableFuture.allOf(skuInfoAsync,categoryViewAsync,imageAsync,spuSaleAsync,jsonAsync,priceAsync)
                 .join();
 
         return skuDetailVo;

@@ -10,4 +10,6 @@ public interface SearchService {
     void deleteGoods(Long skuId);
 
     void saveGoods(Goods goods);
+
+    void updateHotScore(Long skuId, Long hotScore);
 }
