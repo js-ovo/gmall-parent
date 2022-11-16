@@ -3,6 +3,7 @@ package com.jing.gmall.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jing.gmall.common.constant.RedisConst;
+import com.jing.gmall.common.util.IpUtil;
 import com.jing.gmall.common.util.Jsons;
 import com.jing.gmall.common.util.MD5;
 import com.jing.gmall.user.entity.UserInfo;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -31,17 +33,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
     /**
      * 用户登录 并返回信息给前端
      * @param loginParamVo
+     * @param request
      * @return
      */
     @Override
-    public LoginSuccessRespVo login(LoginParamVo loginParamVo) {
+    public LoginSuccessRespVo login(LoginParamVo loginParamVo, HttpServletRequest request) {
         // 对密码进行MD5加密
         String password = MD5.encrypt(loginParamVo.getPasswd());
-
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("login_name",loginParamVo.getLoginName());
         wrapper.eq("passwd",password);
         UserInfo userInfo = getOne(wrapper);
+
         if (userInfo != null){
             LoginSuccessRespVo respVo = new LoginSuccessRespVo();
             // 生成token
@@ -50,6 +53,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
             respVo.setNickName(userInfo.getNickName());
             respVo.setName(userInfo.getName());
 
+            // 获取调用的ip地址
+            userInfo.setIp(IpUtil.getIpAddress(request));
             // 将用户信息存入redis中 7天过期
             stringRedisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY + token
                     ,Jsons.toJsonStr(userInfo),RedisConst.USER_AUTH_TTL, TimeUnit.DAYS);

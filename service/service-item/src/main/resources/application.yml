@@ -21,10 +21,3 @@ app:
     queue-length: 5000
 
 # 自定义线程配置
-
-feign:
-  client:
-    config:
-      default:
-        connect-timeout: 5000
-        read-timeout: 5000

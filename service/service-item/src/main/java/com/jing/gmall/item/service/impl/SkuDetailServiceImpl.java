@@ -56,7 +56,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     ,unit = TimeUnit.MINUTES)
     @Override
     public SkuDetailVo getSkuDetail(Long skuId) {
-        return getSkuDetailVoFromRpc(skuId);
+        return getSkuDetailVoFromRpcAsync(skuId);
     }
 
 
@@ -149,9 +149,41 @@ public class SkuDetailServiceImpl implements SkuDetailService {
      *      获取组合信息
      *  - 获取商品实时价格
      *
-     *      异步调用优化
+     *
      */
-    public SkuDetailVo getSkuDetailVoFromRpc(Long skuId) {
+    public SkuDetailVo getSkuDetailVoFromRpcNoAsync(Long skuId) {
+
+        SkuDetailVo skuDetailVo = new SkuDetailVo();
+
+        SkuInfo skuInfo = skuFeignClient.getSkuInfo(skuId).getData();
+        List<SkuImage> imageList = skuFeignClient.getSkuImages(skuId).getData();
+        skuInfo.setSkuImageList(imageList);
+
+        skuDetailVo.setSkuInfo(skuInfo);
+
+        CategoryView categoryView = skuFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
+        skuDetailVo.setCategoryView(categoryView);
+
+        List<SpuSaleAttr> spuSaleAttrs = skuFeignClient.getSpuSaleAttrAndValue(skuInfo.getSpuId(), skuId).getData();
+        skuDetailVo.setSpuSaleAttrList(spuSaleAttrs);
+
+
+        String json = skuFeignClient.getSkuJson(skuInfo.getSpuId()).getData();
+        skuDetailVo.setValuesSkuJson(json);
+
+        BigDecimal price = skuFeignClient.getRealtimePrice(skuId).getData();
+        skuDetailVo.setPrice(price);
+
+        return skuDetailVo;
+    }
+
+
+    /**
+     * 异步调用优化
+     * @param skuId
+     * @return
+     */
+    public SkuDetailVo getSkuDetailVoFromRpcAsync(Long skuId) {
 
         SkuDetailVo skuDetailVo = new SkuDetailVo();
         // 获取商品的基本信息

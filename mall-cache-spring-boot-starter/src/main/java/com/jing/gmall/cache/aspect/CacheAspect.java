@@ -4,6 +4,7 @@ package com.jing.gmall.cache.aspect;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jing.gmall.cache.annotation.MallCache;
 import com.jing.gmall.cache.servie.CacheService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 @Component
+@Slf4j
 public class CacheAspect {
 
 
@@ -99,7 +101,10 @@ public class CacheAspect {
             // 尝试获取锁,只会有一个拿到锁
             if (lockStatus) {
                 // 获取到锁,去数据库查询  执行目标方法
+
+                log.info("切面执行->>>>>>>>>>>>>>>>>>>");
                 Object retVal = joinPoint.proceed();
+                log.info("切面执行完成>>>>>>>>>>>>>>>>>>");
                 //TODO 返回通知
                 // 存入缓存  可以防止 穿透攻击
                 // 动态指定缓存过期时间

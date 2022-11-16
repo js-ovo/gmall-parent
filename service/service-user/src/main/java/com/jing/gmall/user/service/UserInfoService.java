@@ -5,6 +5,8 @@ import com.jing.gmall.user.entity.UserInfo;
 import com.jing.gmall.user.vo.LoginParamVo;
 import com.jing.gmall.user.vo.LoginSuccessRespVo;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
 * @author Jing
 * @description 针对表【user_info(用户表)】的数据库操作Service
@@ -12,7 +14,7 @@ import com.jing.gmall.user.vo.LoginSuccessRespVo;
 */
 public interface UserInfoService extends IService<UserInfo> {
 
-    LoginSuccessRespVo login(LoginParamVo loginParamVo);
+    LoginSuccessRespVo login(LoginParamVo loginParamVo, HttpServletRequest request);
 
     void logout(String token);
 }

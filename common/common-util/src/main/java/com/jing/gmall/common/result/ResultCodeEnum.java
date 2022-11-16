@@ -12,7 +12,7 @@ public enum ResultCodeEnum {
     SUCCESS(200,"成功"),
     FAIL(201, "失败"),
     SERVICE_ERROR(2012, "服务异常"),
-
+    ERROR(2013,"拒绝访问"),
     PAY_RUN(205, "支付中"),
     LOGIN_FAIL(207,"密码错误"),
     LOGIN_AUTH(208, "未登陆"),

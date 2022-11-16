@@ -69,6 +69,13 @@ public class UserInfo implements Serializable {
     @TableField(value = "user_level")
     private String userLevel;
 
+    /**
+     * 验证 ip地址
+     */
+    @TableField(exist = false)
+    private String ip;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 }

@@ -27,7 +27,7 @@ public class Jsons {
         try {
             obj = mapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            return null;
         }
         return obj;
     }

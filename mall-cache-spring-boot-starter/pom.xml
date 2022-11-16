@@ -43,6 +43,11 @@
             <artifactId>redisson</artifactId>
             <version>3.15.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
 
 

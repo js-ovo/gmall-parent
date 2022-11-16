@@ -52,3 +52,17 @@ spring:
 #    # 采样发送给zipkin的方式,http请求
 #    sender:
 #      type: web
+app:
+  auth:
+    no-auth-url:
+      - /js/**
+      - /css/**
+      - /data/**
+      - /fonts/**
+      - /img/**
+    deny-url:
+      - /api/inner/**
+    auth-url:
+      - /auth/order/**
+    login-page: http://passport.gmall.com/login.html
+

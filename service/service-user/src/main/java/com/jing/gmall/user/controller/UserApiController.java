@@ -8,6 +8,8 @@ import com.jing.gmall.user.vo.LoginSuccessRespVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/user/passport")
 public class UserApiController {
@@ -16,10 +18,11 @@ public class UserApiController {
     private UserInfoService userInfoService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody LoginParamVo loginParamVo){
+    public Result login(@RequestBody LoginParamVo loginParamVo, HttpServletRequest request){
+
 
         // 返回 data.token code  data全部
-        LoginSuccessRespVo respVo = userInfoService.login(loginParamVo);
+        LoginSuccessRespVo respVo = userInfoService.login(loginParamVo,request);
 
         if (respVo == null){
             return Result.build("", ResultCodeEnum.LOGIN_FAIL);
