@@ -13,10 +13,6 @@ import java.util.Date;
 @Data
 public class CartInfo implements Serializable {
 
-    /**
-     * 用户id
-     */
-    private String userId;
 
     /**
      * skuid
@@ -28,6 +24,11 @@ public class CartInfo implements Serializable {
      */
     private BigDecimal cartPrice;
 
+
+    /**
+     * 结算时 实际价格
+     */
+    private BigDecimal skuPrice;
     /**
      * 数量
      */

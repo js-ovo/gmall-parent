@@ -20,5 +20,18 @@ public class RedisConst {
     public static final String USER_LOGIN_KEY = "user:info:";
     public static final long USER_AUTH_TTL = 7;
     public static final String USER_UID = "uid";
-    public static final String TEMP_ID = "tempId";
+    public static final String TEMP_ID = "usertempid";
+
+    /**
+     * Redis存储用户 购物车信息对应的key
+     */
+    public static final String CART_INFO_KEY = "cart:info:";
+    /**
+     * 单个商品最大数量
+     */
+    public static final Integer CART_ITEM_MAX_VALUE = 200;
+    /**
+     * 购物车最大 商品数目
+     */
+    public static final Long CART_ITEM_MAX_COUNT = 200L;
 }

@@ -19,9 +19,18 @@ public class CartRpcController {
     public Result<SkuInfo> addToCart(@PathVariable("skuId") Long skuId,
                                      @RequestParam("skuNum") Integer skuNum,
                                      HttpServletRequest request){
+        //  要存入的用户
+        String key = cartService.resolveKey();
+        //  存入商品
+        SkuInfo skuInfo = cartService.addProductToCart(key,skuId,skuNum);
+        return Result.ok(skuInfo);
+    }
 
 
-
+    @DeleteMapping("/deleteChecked")
+    public Result deleteChecked(){
+        String key = cartService.resolveKey();
+        cartService.deleteChecked(key);
         return Result.ok();
     }
 }

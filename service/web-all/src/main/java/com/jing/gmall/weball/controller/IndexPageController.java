@@ -18,7 +18,7 @@ public class IndexPageController {
     private CategoryFeignClient categoryFeignClient;
 
 
-    @GetMapping("/")
+    @GetMapping({"/","index.html"})
     public String index(Model model){
         List<CategoryVo> vos = categoryFeignClient.getCategoryTreeData().getData();
         model.addAttribute("list",vos);

@@ -28,16 +28,22 @@ spring:
             - Path=/api/user/**
 
 
-        - id: weball_route
-          uri: lb://web-all
-          predicates:
-            - Host=**.gmall.com,gmall.com
-
         - id: item_route
           uri: lb://service-item
           predicates:
             - Path=/api/inner/rpc/item/**
 
+        - id: cart_route
+          uri: lb://service-cart
+          predicates:
+            - Path=/api/cart/**
+
+
+
+        - id: weball_route
+          uri: lb://web-all
+          predicates:
+            - Host=**.gmall.com,gmall.com
 
 
 
