@@ -9,22 +9,22 @@ public class ThreadPoolProperties {
     /**
      * 核心线程数
      */
-    private Integer corePoolSize;
+    private Integer corePoolSize = 16;
     /**
      * 最大线程数
      */
-    private Integer maximumPoolSize;
+    private Integer maximumPoolSize = 32;
 
     /**
      * 活跃时间
      */
-    private long keepAliveTime;
+    private long keepAliveTime = 5;
 
 
     /**
      * 阻塞队列的长度
      */
-    private Integer queueLength;
+    private Integer queueLength = 3000;
 
 
 

@@ -43,7 +43,7 @@ public class ThreadPoolConfiguration {
                     @Override
                     public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r);
-                        thread.setName("[" + applicationName + "-核心线程-" + i++ + "] => ");
+                        thread.setName(applicationName + "-核心线程-" + i++);
                         return thread;
                     }
                 },

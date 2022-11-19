@@ -15,9 +15,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,8 @@ public class CartServiceImpl implements CartService {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private SkuFeignClient skuFeignClient;
+    @Autowired
+    private ThreadPoolExecutor executor;
 
     @Override
     public String resolveKey() {
@@ -64,18 +69,19 @@ public class CartServiceImpl implements CartService {
 
             // 将商品加入购物车
             saveProduct(key, cartInfo);
-            return skuInfo;
+        } else {
+            // 更新商品数量   获取 当前购物车中的 项目
+            CartInfo cartInfo = getCartInfo(key, skuId);
+            // 更新商品数量
+            cartInfo.setSkuNum(cartInfo.getSkuNum() + skuNum);
+            // 存入购物车
+            saveProduct(key,cartInfo);
+            // 返回skuInfo
+            skuInfo.setId(skuId);
+            skuInfo.setSkuName(cartInfo.getSkuName());
+            skuInfo.setSkuDefaultImg(cartInfo.getImgUrl());
         }
-        // 更新商品数量   获取 当前购物车中的 项目
-        CartInfo cartInfo = getCartInfo(key, skuId);
-        // 更新商品数量
-        cartInfo.setSkuNum(cartInfo.getSkuNum() + skuNum);
-        // 存入购物车
-        saveProduct(key,cartInfo);
-        // 返回skuInfo
-        skuInfo.setId(skuId);
-        skuInfo.setSkuName(cartInfo.getSkuName());
-        skuInfo.setSkuDefaultImg(cartInfo.getImgUrl());
+
 
         //  给临时用户 购物车设置过期时间
         if (HttpRequestUtils.getUserId() == null && stringRedisTemplate.getExpire(key) < 0){
@@ -116,10 +122,38 @@ public class CartServiceImpl implements CartService {
         // 再查询   登录用户 先合并后再查询   临时用户 直接查询
         List<Object> values = stringRedisTemplate.opsForHash().values(key);
 
-        return values.stream()
+        List<CartInfo> cartInfos = values.stream()
                 .map(item -> Jsons.json2Obj(item.toString(), CartInfo.class))
                 .sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime())) // 按照时间排序
                 .collect(Collectors.toList());
+
+        // 购物车价格同步,远程调用获取最新的价格
+        CompletableFuture.runAsync(() -> {
+            // 异步更新商品的最新价格
+            log.info("正在同步商品最新价格");
+            batchUpdateRealTimePrice(key,cartInfos);
+        },executor);
+
+        return cartInfos;
+    }
+
+
+    /**
+     * 异步同步商品的最新价格
+     * @param key
+     * @param cartInfos
+     */
+    private void batchUpdateRealTimePrice(String key, List<CartInfo> cartInfos) {
+        cartInfos.forEach(item -> {
+            BigDecimal realTimePrice = skuFeignClient.getRealtimePrice(item.getSkuId()).getData();
+            if (Math.abs(item.getSkuPrice().subtract(realTimePrice).doubleValue()) > 0.01){
+                log.info("用户[{}]购物车中商品[{}],价格发生变化正在更新!",key,item.getSkuName());
+                // 更新最新价格
+                item.setSkuPrice(realTimePrice);
+                // 更新到redis中
+                saveProduct(key,item);
+            }
+        });
     }
 
 
