@@ -25,7 +25,7 @@ public class ThreadPoolConfiguration {
      * long keepAliveTime, 活跃时间
      * TimeUnit unit, 单位
      * BlockingQueue<Runnable> workQueue, 阻塞队列
-     * ThreadFactory threadFactory, 线程工厂
+     * ThreadFactory factory, 线程工厂
      * RejectedExecutionHandler handler  拒绝策略
      * @param threadPoolProperties
      * @return

@@ -1,0 +1,164 @@
+spring:
+  shardingsphere:
+    # 配置数据源
+    datasource:
+      names: master_1,master_1_s1,master_1_s2,master_2,master_2_s1,master_2_s2
+      master_1: # gmall_order_1 主库
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.11.10:3306/gmall_order_1?useSSL=false
+        username: root
+        password: 131421
+
+      master_1_s1: # gmall_order_1 从库
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.11.10:3307/gmall_order_1?useSSL=false
+        username: root
+        password: 131421
+
+      master_1_s2: # gmall_order_1 从库
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.11.10:3308/gmall_order_1?useSSL=false
+        username: root
+        password: 131421
+
+      master_2: # gmall_order_2 主库
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.11.10:3306/gmall_order_2?useSSL=false
+        username: root
+        password: 131421
+
+      master_2_s1: # gmall_order_2 从库
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.11.10:3307/gmall_order_2?useSSL=false
+        username: root
+        password: 131421
+
+      master_2_s2: # gmall_order_2 从库
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.11.10:3308/gmall_order_2?useSSL=false
+        username: root
+        password: 131421
+
+    rules:
+      # 读写分离规则
+      readwrite-splitting:
+        data-sources:
+          # 读写分离数据源
+          order-dw-0:
+            type: Static
+            props:
+              read-data-source-names: master_1_s1,master_1_s2
+              write-data-source-name: master_1
+            # 负载均衡算法 名称
+            load-balancer-name: order_rw
+          order-dw-1:
+            type: Static
+            props:
+              read-data-source-names: master_2_s1,master_2_s2
+              write-data-source-name: master_2
+            # 负载均衡算法 名称
+            load-balancer-name: order_rw
+        # 负载均衡算法配置
+        load-balancers:
+          order_rw:
+            # 算法名称
+            type: ROUND_ROBIN
+      # 数据分片规则
+      sharding:
+        default-database-strategy: # 分库策略
+          # 标准分库策略
+          standard:
+            # 分库使用的分片键- 使用哪一列进行分片
+            sharding-column: user_id
+            # 分库算法名称
+            sharding-algorithm-name: order_database_sharding_ag
+        # 配置逻辑表绑定关系  联表查询时不会出现 笛卡尔积
+        binding-tables:
+          - order_info,order_detail
+        tables: # 声明每一种逻辑表的分表策略
+          # 逻辑表名称
+          order_info:
+            # 实际的表名称
+            actual-data-nodes: order-dw-$->{0..1}.order_info_$->{0..2}
+            # 分表策略
+            table-strategy:
+              # 标准
+              standard:
+                # 分片的列
+                sharding-column: user_id
+                # 分片算法名
+                sharding-algorithm-name: order_info_sharing_alg
+            # 主键生成策略
+            key-generate-strategy:
+              # 主键列
+              column: id
+              # 主键生成器名称
+              key-generator-name: order_info_id
+
+          order_detail:
+            actual-data-nodes: order-dw-$->{0..1}.order_detail_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: order_detail_sharing_alg
+
+          order_status_log:
+            actual-data-nodes: order-dw-$->{0..1}.order_status_log_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: order_status_log_sharing_alg
+
+          payment_info:
+            actual-data-nodes: order-dw-$->{0..1}.payment_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: payment_info_sharing_alg
+
+        # 分片算法
+        sharding-algorithms:
+          # 名称
+          order_info_sharing_alg:
+            # 算法类型
+            type: INLINE #标准行内表达式算法
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+
+          order_detail_sharing_alg:
+            type: INLINE
+            props:
+              algorithm-expression: order_detail_$->{user_id % 3}
+
+          order_status_log_sharing_alg:
+            type: INLINE
+            props:
+              algorithm-expression: order_status_log_$->{user_id % 3}
+
+          payment_info_sharing_alg:
+            type: INLINE
+            props:
+              algorithm-expression: payment_info_$->{user_id % 3}
+
+          order_database_sharding_ag:
+            # 算法类型  分库算法
+            type: INLINE #标准行内表达式算法
+            props:
+              algorithm-expression: order-dw-$->{user_id % 2}
+        # 主键生成策略
+        key-generators:
+          order_info_id:
+            # id生成算法名称    雪花算法
+            type: SNOWFLAKE
+            props:
+              # 机器编号 唯一
+              worker-id: ${random.int(1024)}
+    # 显示sql语句
+    props:
+      sql-show: true
