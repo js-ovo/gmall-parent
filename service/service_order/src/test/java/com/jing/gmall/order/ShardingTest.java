@@ -52,7 +52,8 @@ public class ShardingTest {
 
     @Test
     void selectTest(){
-        // 强制主库路由 只能从主库读数据
+        // 强制主库路由 只能从主库读数据、
+
         HintManager instance = HintManager.getInstance();
         instance.setWriteRouteOnly();
         QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();

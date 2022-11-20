@@ -52,7 +52,7 @@ public class CartServiceImpl implements CartService {
         if (! hasProduct){
             // 新增  判断是否超过购物车最大容量
             if (stringRedisTemplate.opsForHash().size(key) >= RedisConst.CART_ITEM_MAX_COUNT){
-                throw  new GmallException(ResultCodeEnum.CART_MAX_ITEM_COUNT);
+                throw new GmallException(ResultCodeEnum.CART_MAX_ITEM_COUNT);
             }
             // 获取商品信息  远程调用
             skuInfo = skuFeignClient.getSkuInfo(skuId).getData();
@@ -214,6 +214,18 @@ public class CartServiceImpl implements CartService {
             throw new GmallException(ResultCodeEnum.CART_NO_CHECKED);
         }
         stringRedisTemplate.opsForHash().delete(key,skuIds);
+    }
+
+    /**
+     * 获取购物车中选中的商品
+     * @param cartKey
+     * @return
+     */
+    @Override
+    public List<CartInfo> getCheckedCartInfo(String cartKey) {
+        return getCartList(cartKey).stream()
+                .filter(cartInfo -> cartInfo.getIsChecked() == 1)
+                .collect(Collectors.toList());
     }
 
 

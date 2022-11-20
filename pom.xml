@@ -22,6 +22,7 @@
         <module>service</module>
         <module>server-gateway</module>
         <module>mall-cache-spring-boot-starter</module>
+        <module>ware-manage</module>
     </modules>
 
     <!--定义依赖版本号-->

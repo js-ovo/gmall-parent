@@ -1,10 +1,13 @@
 package com.jing.gmall.user.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jing.gmall.user.entity.UserAddress;
 import com.jing.gmall.user.mapper.UserAddressMapper;
 import com.jing.gmall.user.service.UserAddressService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author Jing
@@ -15,6 +18,15 @@ import org.springframework.stereotype.Service;
 public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddress>
     implements UserAddressService {
 
+    /**
+     * 获取用户地址列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<UserAddress> getUserAddress(Long userId) {
+        return this.list(new LambdaQueryWrapper<UserAddress>().eq(UserAddress::getUserId, userId));
+    }
 }
 
 

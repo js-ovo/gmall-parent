@@ -36,4 +36,6 @@ public interface CartService {
     void removeProduct(String key, Long skuId);
 
     void deleteChecked(String key);
+
+    List<CartInfo> getCheckedCartInfo(String cartKey);
 }

@@ -3,3 +3,5 @@ server:
 spring:
   profiles:
     include: sharding
+  main:
+    allow-bean-definition-overriding: true
