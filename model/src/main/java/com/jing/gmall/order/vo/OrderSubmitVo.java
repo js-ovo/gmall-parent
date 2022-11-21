@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,13 +34,13 @@ public class OrderSubmitVo {
     @Data
     public static class OrderDetailListDTO {
         @JsonProperty("skuId")
-        private Integer skuId;
+        private Long skuId;
         @JsonProperty("skuName")
         private String skuName;
         @JsonProperty("skuNum")
         private Integer skuNum;
         @JsonProperty("orderPrice")
-        private Integer orderPrice;
+        private BigDecimal orderPrice;
         @JsonProperty("imgUrl")
         private String imgUrl;
     }

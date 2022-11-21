@@ -46,4 +46,16 @@ public class CartRpcController {
         cartService.deleteChecked(key);
         return Result.ok();
     }
+
+    /**
+     * 移除购物车中指定的商品
+     * @param ids
+     * @return
+     */
+    @PostMapping("/remove")
+    public Result removeSkuByIds(@RequestBody List<Long> ids){
+        String key = cartService.resolveKey();
+        cartService.removeSkuByIds(key,ids);
+        return Result.ok();
+    }
 }

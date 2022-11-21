@@ -38,4 +38,6 @@ public interface CartService {
     void deleteChecked(String key);
 
     List<CartInfo> getCheckedCartInfo(String cartKey);
+
+    void removeSkuByIds(String key, List<Long> ids);
 }

@@ -25,4 +25,9 @@ public class OrderController {
         model.addAttribute("tradeNo",confirmVo.getTradeNo());
         return "order/trade";
     }
+
+    @GetMapping("/myOrder.html")
+    public String myOrderPage(){
+        return "order/myOrder";
+    }
 }

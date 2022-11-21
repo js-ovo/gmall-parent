@@ -21,4 +21,12 @@ public interface CartFeignClient {
 
     @GetMapping("/getCheckedCartInfo")
     Result<List<CartInfo>> getCheckedCartInfo();
+
+    /**
+     * 移除购物车中指定的商品
+     * @param ids
+     * @return
+     */
+    @PostMapping("/remove")
+    Result removeSkuByIds(@RequestBody List<Long> ids);
 }

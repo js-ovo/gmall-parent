@@ -228,6 +228,17 @@ public class CartServiceImpl implements CartService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 移除指定id的商品
+     * @param cartKey
+     * @param ids
+     */
+    @Override
+    public void removeSkuByIds(String cartKey, List<Long> ids) {
+        Object[] values = ids.stream().map(Object::toString).toArray();
+        stringRedisTemplate.opsForHash().delete(cartKey,values);
+    }
+
 
     /**
      * 商品信息存入redis

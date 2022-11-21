@@ -34,4 +34,9 @@ public class RedisConst {
      * 购物车最大 商品数目
      */
     public static final Long CART_ITEM_MAX_COUNT = 200L;
+    public static final String ORDER_TOKEN = "order:trade:";
+    /**
+     * 订单过期时间
+     */
+    public static final long ORDER_TIME_OUT = 1000 * 60 * 30;
 }

@@ -57,13 +57,13 @@ public class OrderDetail implements Serializable {
      * 购买价格(下单时sku价格）
      */
     @TableField(value = "order_price")
-    private Integer orderPrice;
+    private BigDecimal orderPrice;
 
     /**
      * 购买个数
      */
     @TableField(value = "sku_num")
-    private String skuNum;
+    private Integer skuNum;
 
     /**
      * 操作时间
