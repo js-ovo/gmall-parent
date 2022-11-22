@@ -13,4 +13,6 @@ public interface OrderService {
     Long submitOrder(String tradeNo, OrderSubmitVo orderSubmitVo);
 
     OrderInfo getOrderInfo(Long userId, Long orderId);
+
+    void closeOrder(Long userId, Long orderId);
 }

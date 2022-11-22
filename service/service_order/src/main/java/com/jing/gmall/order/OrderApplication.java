@@ -1,6 +1,7 @@
 package com.jing.gmall.order;
 
 import com.jing.gmall.common.config.exception.annotation.EnableExceptionHandler;
+import com.jing.gmall.common.config.mq.annotation.EnableRabbitMq;
 import com.jing.gmall.common.interceptor.EnableUserAuthFeignInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableUserAuthFeignInterceptor
 @EnableTransactionManagement
 @EnableExceptionHandler
+@EnableRabbitMq
 public class OrderApplication {
     public static void main(String[] args) {
         SpringApplication.run(OrderApplication.class,args);

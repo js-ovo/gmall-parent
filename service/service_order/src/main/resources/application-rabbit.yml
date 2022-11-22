@@ -1,0 +1,18 @@
+spring:
+  rabbitmq:
+    host: 192.168.11.10
+    port: 5672
+    virtual-host: /
+    username: admin
+    password: admin
+    # 开启 返回通知
+    publisher-returns: true # 发送端 return
+    publisher-confirm-type: correlated # 发送端消息确认 并发确认,每个消息必须给一个唯一的id 服务器会告诉 生产者 唯一id的消息状态
+
+    template:
+      mandatory: true # 开启rabbit mq收发消息强制确认
+
+    listener:
+      direct:
+        acknowledge-mode: manual # 消费端 消费消息手动确认
+        prefetch: 10 # 消费端 一次最大消费消息数量

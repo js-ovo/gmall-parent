@@ -20,6 +20,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.jing.gmall</groupId>
             <artifactId>common-util</artifactId>
             <version>1.0</version>

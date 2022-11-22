@@ -2,6 +2,7 @@ package com.jing.gmall.order.mapper;
 
 import com.jing.gmall.order.entity.OrderInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author Jing
@@ -11,6 +12,18 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
 
+    /**
+     *  将订单状态修改为期望的状态
+     * @param userId 用户id
+     * @param orderId 订单号
+     * @param orderStatus 想要修改的订单状态
+     * @param processStatus 想要修改的订单 进程状态
+     * @param expectOrderStatus 期望原来订单状态
+     * @param expectProcessStatus 期望原来的 订单进程状态
+     */
+    void updateOrderStatus(@Param("userId") Long userId, @Param("orderId") Long orderId,
+                           @Param("orderStatus") String orderStatus, @Param("processStatus") String processStatus,
+                           @Param("expectOrderStatus") String expectOrderStatus, @Param("expectProcessStatus") String expectProcessStatus);
 }
 
 

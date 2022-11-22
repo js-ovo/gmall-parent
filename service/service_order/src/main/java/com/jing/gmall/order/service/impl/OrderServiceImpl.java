@@ -2,6 +2,8 @@ package com.jing.gmall.order.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jing.gmall.cart.entity.CartInfo;
+import com.jing.gmall.common.config.mq.service.MqService;
+import com.jing.gmall.common.constant.MqConst;
 import com.jing.gmall.common.constant.RedisConst;
 import com.jing.gmall.common.execption.GmallException;
 import com.jing.gmall.common.result.ResultCodeEnum;
@@ -13,6 +15,7 @@ import com.jing.gmall.feignclients.cart.CartFeignClient;
 import com.jing.gmall.feignclients.product.SkuFeignClient;
 import com.jing.gmall.feignclients.user.UserFeignClient;
 import com.jing.gmall.feignclients.ware.WareFeignClient;
+import com.jing.gmall.msg.OrderCreateMsg;
 import com.jing.gmall.order.entity.OrderDetail;
 import com.jing.gmall.order.entity.OrderInfo;
 import com.jing.gmall.order.entity.OrderStatusLog;
@@ -55,6 +58,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailService orderDetailService;
     @Autowired
     private OrderStatusLogMapper orderStatusLogMapper;
+    @Autowired
+    private MqService mqService;
 
     /**
      * 获取 订单提交页面的数据
@@ -171,8 +176,11 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderSubmitVo.OrderDetailListDTO::getSkuId).collect(Collectors.toList());
         cartFeignClient.removeSkuByIds(ids);
 
-        //TODO 超过规定时间内未支付订单 关闭订单
-
+        //超过规定时间内未支付订单 关闭订单  向消息队列中发送关闭订单的消息
+        OrderCreateMsg orderCreateMsg = new OrderCreateMsg();
+        orderCreateMsg.setUserId(HttpRequestUtils.getUserId());
+        orderCreateMsg.setOrderId(orderInfo.getId());
+        mqService.convertAndSend(MqConst.ORDER_EVENT_EXCHANGE,MqConst.ORDER_CREATE_RK,orderCreateMsg);
         return orderInfo.getId();
     }
 
@@ -193,6 +201,18 @@ public class OrderServiceImpl implements OrderService {
                         new LambdaQueryWrapper<OrderInfo>()
                                 .eq(OrderInfo::getId, orderId)
                                 .eq(OrderInfo::getUserId, userId));
+    }
+
+    /**
+     * 关闭订单
+     * @param userId 用户id
+     * @param orderId 订单
+     */
+    @Override
+    public void closeOrder(Long userId, Long orderId) {
+        orderInfoMapper.updateOrderStatus(userId,orderId,
+                ProcessStatus.CLOSED.getOrderStatus().name(),ProcessStatus.CLOSED.name()
+                ,OrderStatus.UNPAID.name(),ProcessStatus.UNPAID.name());
     }
 
     /**
@@ -245,7 +265,7 @@ public class OrderServiceImpl implements OrderService {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setUserId(HttpRequestUtils.getUserId());
         orderInfo.setConsignee(orderSubmitVo.getConsignee());
-        orderInfo.setConsigneeTel(orderInfo.getConsigneeTel());
+        orderInfo.setConsigneeTel(orderSubmitVo.getConsigneeTel());
 
         List<OrderSubmitVo.OrderDetailListDTO> orderDetailList = orderSubmitVo.getOrderDetailList();
         // 计算订单总的价格
@@ -257,9 +277,9 @@ public class OrderServiceImpl implements OrderService {
         // 支付方式
         orderInfo.setPaymentWay(PaymentWay.ONLINE.name());
         // 送货地址
-        orderInfo.setDeliveryAddress(orderInfo.getDeliveryAddress());
+        orderInfo.setDeliveryAddress(orderSubmitVo.getDeliveryAddress());
         // 订单备注
-        orderInfo.setOrderComment(orderInfo.getOrderComment());
+        orderInfo.setOrderComment(orderSubmitVo.getOrderComment());
         // 订单流水号
         orderInfo.setOutTradeNo(tradeNo);
         //订单体
