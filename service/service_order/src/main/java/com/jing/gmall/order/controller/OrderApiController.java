@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/order/auth")
 public class OrderApiController {
 
-    ///api/order/auth/submitOrder?tradeNo=GML_1668957846719_3
     @Autowired
     private OrderService orderService;
 

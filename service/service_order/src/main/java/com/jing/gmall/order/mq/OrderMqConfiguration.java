@@ -67,6 +67,15 @@ public class OrderMqConfiguration {
         return QueueBuilder.durable(MqConst.ORDER_DEAD_QUEUE).build();
     }
 
+    /**
+     * 订单支付成功队列
+     * @return
+     */
+    @Bean
+    public Queue paySuccessQueue(){
+        return QueueBuilder.durable(MqConst.ORDER_PAYED_QUEUE).build();
+    }
+
 
 
 
@@ -89,6 +98,15 @@ public class OrderMqConfiguration {
                 Binding.DestinationType.QUEUE, // 绑定类型  交换机 队列
                 MqConst.ORDER_EVENT_EXCHANGE, // 需要绑定的交换机
                 MqConst.ORDER_TIMEOUT_RK, // 绑定的路由key
+                null);
+    }
+
+    @Bean
+    public Binding paySuccessBinding(){
+        return new Binding(MqConst.ORDER_PAYED_QUEUE,
+                Binding.DestinationType.QUEUE,
+                MqConst.ORDER_EVENT_EXCHANGE,
+                MqConst.ORDER_PAYED_RK,
                 null);
     }
 

@@ -19,4 +19,10 @@ public class PayController {
         model.addAttribute("orderInfo",orderInfo);
         return "payment/pay";
     }
+
+
+    @GetMapping("/pay/success.html")
+    public String paySuccess(){
+        return "payment/success";
+    }
 }
