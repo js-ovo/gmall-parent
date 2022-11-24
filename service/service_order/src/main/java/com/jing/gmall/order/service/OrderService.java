@@ -2,7 +2,10 @@ package com.jing.gmall.order.service;
 
 import com.jing.gmall.order.entity.OrderInfo;
 import com.jing.gmall.order.vo.OrderConfirmVo;
+import com.jing.gmall.order.vo.OrderSplitVo;
 import com.jing.gmall.order.vo.OrderSubmitVo;
+
+import java.util.List;
 
 /**
  * 处理订单 业务
@@ -45,4 +48,14 @@ public interface OrderService {
      * @param status 库存更改返回信息
      */
     void deduceOrder(Long id, Long userId, String status);
+
+
+    /**
+     * 将订单拆分
+     * @param orderId 订单id
+     * @param wareSkuMap 仓储系统传入的拆分参数
+     * @return
+     */
+    List<OrderSplitVo> orderSplit(Long orderId, String wareSkuMap);
+
 }

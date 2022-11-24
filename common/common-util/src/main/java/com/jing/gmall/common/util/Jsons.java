@@ -1,6 +1,7 @@
 package com.jing.gmall.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Jsons {
@@ -26,6 +27,16 @@ public class Jsons {
         T obj = null;
         try {
             obj = mapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    public static <T> T json2Obj(String json, TypeReference<T> t){
+        T obj = null;
+        try {
+            obj = mapper.readValue(json, t);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

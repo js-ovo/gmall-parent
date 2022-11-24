@@ -1,6 +1,5 @@
 package com.jing.gmall.order.mq.listener;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jing.gmall.common.config.mq.service.MqService;
 import com.jing.gmall.common.constant.MqConst;
 import com.jing.gmall.msg.OrderPayedMsg;
@@ -69,9 +68,8 @@ public class OrderPaySuccessListener {
         stockMsg.setOrderBody(orderInfo.getTradeBody());
         stockMsg.setDeliveryAddress(orderInfo.getDeliveryAddress());
 
-        List<OrderDetail> orderDetails = orderDetailService.list(new LambdaQueryWrapper<OrderDetail>()
-                .eq(OrderDetail::getOrderId, orderInfo.getId())
-                .eq(OrderDetail::getUserId, orderInfo.getUserId()));
+        List<OrderDetail> orderDetails = orderDetailService.getOrderDetails(orderInfo.getId(), orderInfo.getUserId());
+
         List<WareStockMsg.Details> details = orderDetails.stream().map(item -> {
             WareStockMsg.Details detail = new WareStockMsg.Details();
             detail.setSkuId(item.getSkuId());

@@ -4,6 +4,8 @@ package com.jing.gmall.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jing.gmall.order.entity.OrderDetail;
 
+import java.util.List;
+
 /**
 * @author Jing
 * @description 针对表【order_detail(订单明细表)】的数据库操作Service
@@ -11,4 +13,5 @@ import com.jing.gmall.order.entity.OrderDetail;
 */
 public interface OrderDetailService extends IService<OrderDetail> {
 
+    List<OrderDetail> getOrderDetails(Long orderId, Long userId);
 }
