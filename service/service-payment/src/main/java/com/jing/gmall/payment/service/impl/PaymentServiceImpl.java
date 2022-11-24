@@ -4,6 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.jing.gmall.common.util.DateUtil;
 import com.jing.gmall.common.util.Jsons;
 import com.jing.gmall.feignclients.order.OrderFeignClient;
 import com.jing.gmall.order.entity.OrderInfo;
@@ -59,12 +60,14 @@ public class PaymentServiceImpl implements PaymentService {
         params.put("total_amount",total_amount);
         params.put("product_code",product_code);
         params.put("subject",subject);
+        // 设置订单超时时间  超过时间后自动关闭订单
+        String expireTime = DateUtil.formatDate(orderInfo.getExpireTime(),"yyyy-MM-dd HH:mm:ss");
+        params.put("time_expire",expireTime);
         String jsonStr = Jsons.toJsonStr(params);
         log.info("请求参数数据:{}",jsonStr);
         request.setBizContent(jsonStr);
         return alipayClient.pageExecute(request).getBody();
     }
-
 
     /**
      * 验证支付成功后  异步调用返回参数

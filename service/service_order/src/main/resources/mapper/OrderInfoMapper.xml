@@ -45,10 +45,16 @@
     <update id="updateOrderStatus">
         update order_info
         set order_status = #{orderStatus},
-            process_status = #{processStatus}
+        process_status = #{processStatus}
         where user_id = #{userId}
-          and id = #{orderId}
-          and order_status = #{expectOrderStatus}
-          and process_status = #{expectProcessStatus}
+        and id = #{orderId}
+        and order_status in
+        <foreach collection="expectOrderStatus" item="os" open="(" close=")" separator=",">
+            #{os}
+        </foreach>
+        and process_status in
+        <foreach collection="expectProcessStatus" item="ps" open="(" close=")" separator=",">
+            #{ps}
+        </foreach>
     </update>
 </mapper>

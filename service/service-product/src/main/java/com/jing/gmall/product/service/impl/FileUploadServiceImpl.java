@@ -74,7 +74,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                     "}";
             minioClient.setBucketPolicy(minioProperties.getBucketName(), bucketProxy);
         }
-        String date = DateUtil.formatDate(new Date());
+        String date = DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
         // 创建文件名称
         String objectName = date + "/" + UUID.randomUUID().toString().replace("-", "") + "_" + file.getOriginalFilename();
         PutObjectOptions options = new PutObjectOptions(file.getInputStream().available(), -1);

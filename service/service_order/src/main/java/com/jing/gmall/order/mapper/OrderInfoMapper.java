@@ -4,6 +4,8 @@ import com.jing.gmall.order.entity.OrderInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
 * @author Jing
 * @description 针对表【order_info(订单表 订单表)】的数据库操作Mapper
@@ -22,8 +24,9 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
      * @param expectProcessStatus 期望原来的 订单进程状态
      */
     void updateOrderStatus(@Param("userId") Long userId, @Param("orderId") Long orderId,
-                           @Param("orderStatus") String orderStatus, @Param("processStatus") String processStatus,
-                           @Param("expectOrderStatus") String expectOrderStatus, @Param("expectProcessStatus") String expectProcessStatus);
+                           @Param("orderStatus") String orderStatus, @Param("processStatus") String processStatus
+            , @Param("expectOrderStatus") List<String> expectOrderStatus
+            , @Param("expectProcessStatus") List<String> expectProcessStatus);
 }
 
 

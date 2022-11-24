@@ -26,6 +26,7 @@ import com.jing.gmall.order.service.OrderService;
 import com.jing.gmall.order.vo.OrderConfirmVo;
 import com.jing.gmall.order.vo.OrderSubmitVo;
 import com.jing.gmall.user.entity.UserAddress;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -212,7 +215,29 @@ public class OrderServiceImpl implements OrderService {
     public void closeOrder(Long userId, Long orderId) {
         orderInfoMapper.updateOrderStatus(userId,orderId,
                 ProcessStatus.CLOSED.getOrderStatus().name(),ProcessStatus.CLOSED.name()
-                ,OrderStatus.UNPAID.name(),ProcessStatus.UNPAID.name());
+                ,Collections.singletonList(OrderStatus.UNPAID.name())
+                ,Collections.singletonList(ProcessStatus.UNPAID.name()));
+    }
+
+    @Override
+    public OrderInfo getOrderInfo(String outTradeNo) {
+        String[] split = outTradeNo.split("_");
+        // 获取用户id
+        Long userId = Long.parseLong(split[split.length - 1]);
+        // 根据用户id和tradeNo查找
+        return orderInfoMapper.selectOne(new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getOutTradeNo, outTradeNo)
+                .eq(OrderInfo::getUserId, userId));
+    }
+
+    @Override
+    public void updatePayedOrder(Long id, Long userId) {
+        ProcessStatus ps = ProcessStatus.PAID;
+        orderInfoMapper.updateOrderStatus(userId, id
+                , ps.getOrderStatus().name()
+                , ps.name(), Arrays.asList(OrderStatus.UNPAID.name(), OrderStatus.CLOSED.name())
+                , Arrays.asList(ProcessStatus.UNPAID.name(), ProcessStatus.CLOSED.name()));
+        log.info("订单[{}]状态已经修改",id);
     }
 
     /**

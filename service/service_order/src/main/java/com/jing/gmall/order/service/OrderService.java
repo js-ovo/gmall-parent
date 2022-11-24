@@ -15,4 +15,18 @@ public interface OrderService {
     OrderInfo getOrderInfo(Long userId, Long orderId);
 
     void closeOrder(Long userId, Long orderId);
+
+    /**
+     * 根据 outTradeNo获取订单信息  支付成功后 关闭订单使用
+     * @param outTradeNo
+     * @return
+     */
+    OrderInfo getOrderInfo(String outTradeNo);
+
+    /**
+     * 修改订单状态为已经支付
+     * @param orderId
+     * @param userId
+     */
+    void updatePayedOrder(Long orderId, Long userId);
 }

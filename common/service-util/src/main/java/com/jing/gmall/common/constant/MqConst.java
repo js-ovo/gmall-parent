@@ -42,6 +42,9 @@ public class MqConst {
     public static final int ORDER_TTL_MS = 30 * 60 *1000;
 
 
-
-
+    /**
+     * 库存系统交换机
+     */
+    public static final String WARE_STOCK_EXCHANGE = "exchange.direct.ware.stock";
+    public static final String WARE_STOCK_RK = "ware.stock";
 }
