@@ -240,6 +240,28 @@ public class OrderServiceImpl implements OrderService {
         log.info("订单[{}]状态已经修改",id);
     }
 
+    @Override
+    public OrderInfo getOrderInfo(Long orderId) {
+        log.info("根据订单编号[{}]获取订单信息中....",orderId);
+        return orderInfoMapper.selectById(orderId);
+    }
+
+    @Override
+    public void deduceOrder(Long id, Long userId, String status) {
+        ProcessStatus ps;
+        switch (status){
+            case "DEDUCTED":
+                ps = ProcessStatus.WAITING_DELEVER; break;
+            case "OUT_OF_STOCK":
+                ps = ProcessStatus.WAITING_SCHEDULE; break;
+            default: ps = ProcessStatus.NOTIFIED_WARE; break;
+        }
+        orderInfoMapper.updateOrderStatus(userId,id,ps.getOrderStatus().name(),
+                ps.name(),Collections.singletonList(OrderStatus.PAID.name())
+                ,Collections.singletonList(ProcessStatus.PAID.name()));
+        log.info("订单【{}】支付成功后修改状态。。。。",id);
+    }
+
     /**
      * 封装 订单状态
      * @param orderInfo

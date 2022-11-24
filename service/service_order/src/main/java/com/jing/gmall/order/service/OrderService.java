@@ -29,4 +29,20 @@ public interface OrderService {
      * @param userId
      */
     void updatePayedOrder(Long orderId, Long userId);
+
+
+    /**
+     * 获取订单信息 根据订单号 可能会全库扫描
+     * @param orderId
+     * @return
+     */
+    OrderInfo getOrderInfo(Long orderId);
+
+    /**
+     * 支付成功 库存修改后 更新订单状态
+     * @param id
+     * @param userId
+     * @param status 库存更改返回信息
+     */
+    void deduceOrder(Long id, Long userId, String status);
 }

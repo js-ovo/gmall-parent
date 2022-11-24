@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class OrderPayedMsg {
+public class OrderPayedMsg extends BaseMsg{
 
     @JsonProperty("gmt_create")
     private String gmtCreate;

@@ -7,7 +7,8 @@ public enum OrderStatus {
     DELEVERED("已发货"),
     CLOSED("已关闭"),
     FINISHED("已完结") ,
-    SPLIT("订单已拆分");
+    SPLIT("订单已拆分"),
+    WAITING_SCHEDULE("正在从其他仓库调货");
 
     private String comment ;
 

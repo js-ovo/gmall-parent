@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class WareStockMsg {
+public class WareStockMsg extends BaseMsg{
     private Long orderId;
     private String consignee;
     private String consigneeTel;
