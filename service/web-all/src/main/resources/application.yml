@@ -10,3 +10,12 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
+
+feign:
+  client:
+    config:
+      service-item:
+        read-timeout: 3000
+        connect-timeout: 1000
+
+

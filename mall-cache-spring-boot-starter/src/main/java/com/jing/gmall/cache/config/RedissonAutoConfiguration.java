@@ -24,7 +24,6 @@ public class RedissonAutoConfiguration {
                 .setPassword(redisProperties.getPassword());
         // 设置redisson看门狗的时间,默认未30000ms 30s
         //config.setLockWatchdogTimeout(50000);
-
         return Redisson.create(config);
     }
 }

@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
+import java.util.List;
 
 /**
  * 订单表 订单表
@@ -159,6 +161,9 @@ public class OrderInfo implements Serializable {
      */
     @TableField(value = "refundable_time")
     private Date refundableTime;
+
+    @TableField(exist = false) //订单明细（订单买了哪些商品）
+    private List<OrderDetail> orderDetails;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -39,4 +39,11 @@ public class RedisConst {
      * 订单过期时间
      */
     public static final long ORDER_TIME_OUT = 1000 * 60 * 30;
+
+    /**
+     * 秒杀商品使用
+     */
+    public static final String SECKILL_GOODS_KEY = "seckill:goods:";
+    public static final String SECKILL_CODE_KEY = "seckill:code:";
+    public static final String SECKILL_ORDER_KEY = "seckill:order:";
 }

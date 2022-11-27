@@ -20,6 +20,7 @@
         <module>service-cart</module>
         <module>service_order</module>
         <module>service-payment</module>
+        <module>service-seckill</module>
 
     </modules>
 

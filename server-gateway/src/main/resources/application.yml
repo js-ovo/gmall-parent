@@ -48,6 +48,11 @@ spring:
           predicates:
             - Path=/api/payment/**
 
+        - id: seckill_route
+          uri: lb://service-seckill
+          predicates:
+            - Path=/api/activity/**
+
         - id: weball_route
           uri: lb://web-all
           predicates:
